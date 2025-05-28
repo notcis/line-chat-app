@@ -8,3 +8,10 @@ export const loginFormSchema = z.object({
   email: z.string().email(),
   password: passwordSchema,
 });
+
+export const addFriendFormSchema = z.object({
+  email: z
+    .string()
+    .min(1, "This field can't be empty")
+    .email("Please enter a valid email"),
+});
