@@ -17,5 +17,7 @@ export default function UserButton() {
     );
   }
 
-  return <div>{session?.user?.name}</div>;
+  const userName = session?.user?.name?.charAt(0).toUpperCase();
+
+  return <div>{userName}</div>;
 }

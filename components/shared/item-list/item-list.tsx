@@ -22,7 +22,7 @@ export default function ItemList({
         "lg:block": isActive,
       })}
     >
-      <div className="mb-4 flex items-center justify-center">
+      <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
         {Action ? Action : null}
       </div>
