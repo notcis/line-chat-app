@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ThemeToggle } from "@/components/ui/theme/theme-toggle";
 import {
   Tooltip,
   TooltipContent,
@@ -9,8 +10,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useConversation } from "@/hooks/useConversation";
 import { useNavigation } from "@/hooks/useNavigation";
-import { UserIcon } from "lucide-react";
 import Link from "next/link";
+import UserButton from "../user-button";
 
 export default function MobileNav() {
   const paths = useNavigation();
@@ -27,7 +28,7 @@ export default function MobileNav() {
             <li key={id} className="relative">
               <Link href={path.href}>
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger asChild>
                     <Button
                       size="icon"
                       variant={path.active ? "default" : "outline"}
@@ -43,7 +44,10 @@ export default function MobileNav() {
             </li>
           ))}
           <li>
-            <UserIcon />
+            <ThemeToggle />
+          </li>
+          <li>
+            <UserButton />
           </li>
         </ul>
       </nav>

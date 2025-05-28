@@ -2,14 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ThemeToggle } from "@/components/ui/theme/theme-toggle";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useNavigation } from "@/hooks/useNavigation";
-import { UserIcon } from "lucide-react";
 import Link from "next/link";
+import UserButton from "../user-button";
 
 export default function DesktopNav() {
   const paths = useNavigation();
@@ -21,7 +22,7 @@ export default function DesktopNav() {
             <li key={id} className="relative">
               <Link href={path.href}>
                 <Tooltip>
-                  <TooltipTrigger>
+                  <TooltipTrigger asChild>
                     <Button
                       size="icon"
                       variant={path.active ? "default" : "outline"}
@@ -39,7 +40,8 @@ export default function DesktopNav() {
         </ul>
       </nav>
       <div className=" flex flex-col items-center gap-4">
-        <UserIcon />
+        <ThemeToggle />
+        <UserButton />
       </div>
     </Card>
   );
