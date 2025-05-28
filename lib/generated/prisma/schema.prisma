@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id        String     @id @default(uuid())
+  imageUrl  String?
+  username  String?
+  password  String
+  email     String     @unique
+  createdAt DateTime   @default(now()) @db.Timestamp(6)
+  updatedAt DateTime   @default(now()) @db.Timestamp(6)
+  sent      requests[] @relation("SentRequests")
+  received  requests[] @relation("ReceivedRequests")
+
+  @@index([email], name: "by_email")
+}
+
+model requests {
+  id         String   @id @default(uuid())
+  senderId   String
+  receiverId String
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+
+  sender   users @relation("SentRequests", fields: [senderId], references: [id])
+  receiver users @relation("ReceivedRequests", fields: [receiverId], references: [id])
+
+  @@index([receiverId], name: "by_receiver")
+  @@index([receiverId, senderId], name: "by_receiver_sender")
+}
