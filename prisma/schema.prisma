@@ -88,9 +88,9 @@ model conversationMembers {
   conversation    conversations @relation(fields: [conversationId], references: [id])
   lastSeenMessage messages?     @relation("lastSeenMessage", fields: [lastSeenMessageId], references: [id])
 
+  @@unique([memberId, conversationId], name: "by_memberId_conversationId")
   @@index([memberId], name: "by_memberId")
   @@index([conversationId], name: "by_conversationId")
-  @@index([memberId, conversationId], name: "by_memberId_conversationId")
 }
 
 model messages {

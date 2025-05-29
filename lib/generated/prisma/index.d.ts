@@ -7925,6 +7925,7 @@ export namespace Prisma {
 
   export type conversationMembersWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    by_memberId_conversationId?: conversationMembersBy_memberId_conversationIdCompoundUniqueInput
     AND?: conversationMembersWhereInput | conversationMembersWhereInput[]
     OR?: conversationMembersWhereInput[]
     NOT?: conversationMembersWhereInput | conversationMembersWhereInput[]
@@ -7935,7 +7936,7 @@ export namespace Prisma {
     member?: XOR<UsersScalarRelationFilter, usersWhereInput>
     conversation?: XOR<ConversationsScalarRelationFilter, conversationsWhereInput>
     lastSeenMessage?: XOR<MessagesNullableScalarRelationFilter, messagesWhereInput> | null
-  }, "id">
+  }, "id" | "by_memberId_conversationId">
 
   export type conversationMembersOrderByWithAggregationInput = {
     id?: SortOrder
@@ -8703,6 +8704,11 @@ export namespace Prisma {
     fields: conversationMembersOrderByRelevanceFieldEnum | conversationMembersOrderByRelevanceFieldEnum[]
     sort: SortOrder
     search: string
+  }
+
+  export type conversationMembersBy_memberId_conversationIdCompoundUniqueInput = {
+    memberId: string
+    conversationId: string
   }
 
   export type conversationMembersCountOrderByAggregateInput = {
