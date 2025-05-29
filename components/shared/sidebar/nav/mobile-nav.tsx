@@ -12,6 +12,7 @@ import { useConversation } from "@/hooks/useConversation";
 import { useNavigation } from "@/hooks/useNavigation";
 import Link from "next/link";
 import UserButton from "../user-button";
+import { Badge } from "@/components/ui/badge";
 
 export default function MobileNav() {
   const paths = useNavigation();
@@ -34,6 +35,11 @@ export default function MobileNav() {
                       variant={path.active ? "default" : "outline"}
                     >
                       {path.icon}
+                      {path.count ? (
+                        <Badge className=" absolute left-7 bottom-6">
+                          {path.count}
+                        </Badge>
+                      ) : null}
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>

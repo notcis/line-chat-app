@@ -15,15 +15,20 @@ datasource db {
 }
 
 model users {
-  id        String     @id @default(uuid())
+  id        String   @id @default(uuid())
   imageUrl  String?
-  username  String?
+  username  String
   password  String
-  email     String     @unique
-  createdAt DateTime   @default(now()) @db.Timestamp(6)
-  updatedAt DateTime   @default(now()) @db.Timestamp(6)
-  sent      requests[] @relation("SentRequests")
-  received  requests[] @relation("ReceivedRequests")
+  email     String   @unique
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @db.Timestamp(6)
+
+  sent                requests[]            @relation("SentRequests")
+  received            requests[]            @relation("ReceivedRequests")
+  friends1            friends[]             @relation("User1")
+  friends2            friends[]             @relation("User2")
+  conversationMembers conversationMembers[]
+  messages            messages[]            @relation("SentMessages")
 
   @@index([email], name: "by_email")
 }
@@ -39,4 +44,67 @@ model requests {
 
   @@index([receiverId], name: "by_receiver")
   @@index([receiverId, senderId], name: "by_receiver_sender")
+}
+
+model friends {
+  id             String   @id @default(uuid())
+  user1Id        String
+  user2Id        String
+  conversationId String
+  createdAt      DateTime @default(now()) @db.Timestamp(6)
+
+  user1 users @relation("User1", fields: [user1Id], references: [id])
+  user2 users @relation("User2", fields: [user2Id], references: [id])
+
+  conversation conversations @relation(fields: [conversationId], references: [id])
+
+  @@index([user1Id], name: "by_user1")
+  @@index([user2Id], name: "by_user2")
+  @@index([conversationId], name: "by_conversationId")
+}
+
+model conversations {
+  id            String   @id @default(uuid())
+  name          String?
+  isGroup       Boolean
+  lastMessageId String?
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+
+  friends             friends[]
+  conversationMembers conversationMembers[]
+  messages            messages[]
+
+  lastMessage messages? @relation("lastMessage", fields: [lastMessageId], references: [id])
+}
+
+model conversationMembers {
+  id                String   @id @default(uuid())
+  memberId          String
+  conversationId    String
+  lastSeenMessageId String?
+  createdAt         DateTime @default(now()) @db.Timestamp(6)
+
+  member          users         @relation(fields: [memberId], references: [id])
+  conversation    conversations @relation(fields: [conversationId], references: [id])
+  lastSeenMessage messages?     @relation("lastSeenMessage", fields: [lastSeenMessageId], references: [id])
+
+  @@index([memberId], name: "by_memberId")
+  @@index([conversationId], name: "by_conversationId")
+  @@index([memberId, conversationId], name: "by_memberId_conversationId")
+}
+
+model messages {
+  id             String   @id @default(uuid())
+  senderId       String
+  conversationId String
+  type           String
+  content        Json     @db.Json
+  createdAt      DateTime @default(now()) @db.Timestamp(6)
+
+  sender              users                 @relation("SentMessages", fields: [senderId], references: [id])
+  conversation        conversations         @relation(fields: [conversationId], references: [id])
+  conversationMembers conversationMembers[] @relation("lastSeenMessage")
+  conversations       conversations[]       @relation("lastMessage")
+
+  @@index([conversationId], name: "by_conversationId")
 }

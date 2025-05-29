@@ -26,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginWithCredentials } from "@/lib/actions/users.action";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { APP_DESC, APP_NAME } from "@/lib/constants";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -56,8 +57,8 @@ export default function LoginForm() {
     <div className="flex justify-center items-center min-h-screen">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>Login to your account.</CardDescription>
+          <CardTitle>เข้าสู่ระบบ {APP_NAME}</CardTitle>
+          <CardDescription>{APP_DESC}</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -102,17 +103,17 @@ export default function LoginForm() {
                   variant="default"
                   className="text-primary-foreground dark:text-white"
                 >
-                  Login
+                  เข้าสู่ระบบ
                 </Button>
               </fieldset>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <div className=" text-muted-foreground text-sm">
+          <div className="text-muted-foreground text-sm">
             Don&apos;t have an account?{"  "}
-            <Link href="/register" className=" underline">
-              Register
+            <Link href="/register" className="underline">
+              ลงทะเบียน
             </Link>
           </div>
         </CardFooter>

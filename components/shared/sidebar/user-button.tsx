@@ -45,19 +45,15 @@ export default function UserButton() {
       <DropdownMenuContent
         align="start"
         side="top"
-        className="flex px-2.5"
+        className="w-56 flex items-center justify-around"
         forceMount
       >
-        <DropdownMenuLabel className=" text-sm text-muted-foreground">
-          {session.user.email}
+        <DropdownMenuLabel className="text-sm flex flex-col gap-1">
+          <div>{session.user.name}</div>
+          <div>{session.user.email}</div>
         </DropdownMenuLabel>
         <DropdownMenuItem asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={handleLogout}
-          >
+          <Button variant="destructive" size="icon" onClick={handleLogout}>
             <LogOutIcon />
           </Button>
         </DropdownMenuItem>

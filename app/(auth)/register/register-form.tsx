@@ -26,6 +26,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerFormSchema } from "@/lib/validators";
 import { registerUser } from "@/lib/actions/users.action";
+import { APP_NAME } from "@/lib/constants";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -59,7 +60,7 @@ export default function RegisterForm() {
     <div className="flex justify-center items-center min-h-screen">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Register</CardTitle>
+          <CardTitle>ลงทะเบียน {APP_NAME}</CardTitle>
           <CardDescription>Register for a new account.</CardDescription>
         </CardHeader>
         <CardContent>
@@ -131,7 +132,7 @@ export default function RegisterForm() {
                   variant="default"
                   className="text-primary-foreground dark:text-white"
                 >
-                  Login
+                  ลงทะเบียน
                 </Button>
               </fieldset>
             </form>
@@ -141,7 +142,7 @@ export default function RegisterForm() {
           <div className=" text-muted-foreground text-sm">
             Already have an account?{"  "}
             <Link href="/login" className="underline">
-              Login
+              เข้าสู่ระบบ
             </Link>
           </div>
         </CardFooter>
