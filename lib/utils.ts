@@ -19,7 +19,7 @@ export function formatError(error: any) {
   ) {
     const field = error.meta?.target ? error.meta.target : "field";
 
-    return `${field.charAt(0).toUpperCase() + field.slice(1)} already exists`;
+    return `${field} already exists`;
   } else {
     return typeof error.message === "string"
       ? error.message

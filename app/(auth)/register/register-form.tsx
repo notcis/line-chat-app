@@ -18,29 +18,31 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { loginFormSchema } from "@/lib/validators";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginWithCredentials } from "@/lib/actions/users.action";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { registerFormSchema } from "@/lib/validators";
+import { registerUser } from "@/lib/actions/users.action";
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const router = useRouter();
   const { update } = useSession();
 
-  const form = useForm<z.infer<typeof loginFormSchema>>({
-    resolver: zodResolver(loginFormSchema),
+  const form = useForm<z.infer<typeof registerFormSchema>>({
+    resolver: zodResolver(registerFormSchema),
     defaultValues: {
       email: "",
       password: "",
+      passwordConfirm: "",
+      username: "",
     },
   });
 
-  const handleSubmit = async (data: z.infer<typeof loginFormSchema>) => {
-    const res = await loginWithCredentials(data);
+  const handleSubmit = async (data: z.infer<typeof registerFormSchema>) => {
+    const res = await registerUser(data);
 
     if (!res.success) {
       form.setError("root", {
@@ -48,6 +50,7 @@ export default function LoginForm() {
       });
       return;
     }
+
     await update();
     router.push("/");
   };
@@ -56,8 +59,8 @@ export default function LoginForm() {
     <div className="flex justify-center items-center min-h-screen">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>Login to your account.</CardDescription>
+          <CardTitle>Register</CardTitle>
+          <CardDescription>Register for a new account.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -81,10 +84,36 @@ export default function LoginForm() {
                 />
                 <FormField
                   control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>User Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="text" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>password</FormLabel>
+                      <FormControl>
+                        <Input {...field} type="password" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="passwordConfirm"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password Confirm</FormLabel>
                       <FormControl>
                         <Input {...field} type="password" />
                       </FormControl>
@@ -110,9 +139,9 @@ export default function LoginForm() {
         </CardContent>
         <CardFooter className="flex-col gap-2">
           <div className=" text-muted-foreground text-sm">
-            Don&apos;t have an account?{"  "}
-            <Link href="/register" className=" underline">
-              Register
+            Already have an account?{"  "}
+            <Link href="/login" className="underline">
+              Login
             </Link>
           </div>
         </CardFooter>
