@@ -10,7 +10,6 @@ import { auth, signIn, signOut } from "@/auth";
 import { formatError } from "../utils";
 import { prisma } from "../prisma";
 import { hashSync } from "bcrypt-ts-edge";
-import { revalidatePath } from "next/cache";
 
 export const loginWithCredentials = async ({ email, password }: LoginType) => {
   try {
@@ -236,8 +235,6 @@ export async function denyFriendRequest(requestId: string) {
       },
     });
 
-    revalidatePath("/");
-
     return {
       success: true,
       message: "Friend request denied",
@@ -309,8 +306,6 @@ export async function acceptFriendRequest(requestId: string) {
         },
       });
     });
-
-    revalidatePath("/");
 
     return {
       success: true,

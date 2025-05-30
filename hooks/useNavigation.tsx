@@ -1,20 +1,16 @@
 import { getFriendCount } from "@/lib/actions/users.action";
+import { useQuery } from "@tanstack/react-query";
 import { MessageSquareIcon, UsersIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 export function useNavigation() {
   const pathname = usePathname();
-  const [requestsCount, setRequestsCount] = useState(0);
 
-  const fecthData = async () => {
-    const res = await getFriendCount();
-    setRequestsCount(res.requestsCount);
-  };
-
-  useEffect(() => {
-    fecthData();
-  }, []);
+  const { data } = useQuery({
+    queryKey: ["requestsFriendCount"],
+    queryFn: getFriendCount,
+  });
 
   const paths = useMemo(() => {
     return [
@@ -29,10 +25,10 @@ export function useNavigation() {
         href: "/friends",
         icon: <UsersIcon />,
         active: pathname === "/friends",
-        count: requestsCount,
+        count: data?.requestsCount,
       },
     ];
-  }, [pathname, requestsCount]);
+  }, [pathname, data?.requestsCount]);
 
   return paths;
 }

@@ -27,27 +27,38 @@ import {
 import { addFriendRequest } from "@/lib/actions/users.action";
 import { addFriendFormSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserPlusIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 export default function AddFriendDialog() {
+  const queryClient = useQueryClient();
+
   const form = useForm<z.infer<typeof addFriendFormSchema>>({
     resolver: zodResolver(addFriendFormSchema),
     defaultValues: { email: "" },
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: (values: z.infer<typeof addFriendFormSchema>) =>
+      addFriendRequest(values),
+    onSuccess: (res) => {
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
+
+      toast.success(res.message);
+      form.reset();
+      queryClient.invalidateQueries({ queryKey: ["listFriendRequest"] });
+      queryClient.invalidateQueries({ queryKey: ["requestsFriendCount"] });
+    },
+  });
+
   const handleSubmit = async (values: z.infer<typeof addFriendFormSchema>) => {
-    const res = await addFriendRequest(values);
-
-    if (!res.success) {
-      toast.error(res.message);
-      return;
-    }
-
-    form.reset();
-    toast.success(res.message);
+    mutate(values);
   };
   return (
     <Dialog>
@@ -90,7 +101,7 @@ export default function AddFriendDialog() {
               )}
             />
             <DialogFooter>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
+              <Button type="submit" disabled={isPending}>
                 Send
               </Button>
             </DialogFooter>

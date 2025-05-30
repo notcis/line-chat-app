@@ -1,23 +1,29 @@
+"use client";
+
 import ConversationFallback from "@/components/shared/conversation/conversation-fallback";
 import ItemList from "@/components/shared/item-list/item-list";
 import AddFriendDialog from "./_components/add-friend-dialog";
 import { getFriendRequests } from "@/lib/actions/users.action";
 import { Loader2Icon } from "lucide-react";
 import Request from "./_components/request";
+import { useQuery } from "@tanstack/react-query";
 
-export default async function page() {
-  const { requests } = await getFriendRequests();
+export default function Friendspage() {
+  const { data } = useQuery({
+    queryKey: ["listFriendRequest"],
+    queryFn: getFriendRequests,
+  });
 
   return (
     <>
       <ItemList title="Friends" action={<AddFriendDialog />}>
-        {requests ? (
-          requests.length === 0 ? (
+        {data?.requests ? (
+          data?.requests.length === 0 ? (
             <p className=" w-full h-full flex items-center justify-center">
               No friend requests found
             </p>
           ) : (
-            requests.map((request) => (
+            data.requests.map((request) => (
               <Request
                 key={request.id}
                 id={request.id}

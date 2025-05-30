@@ -6,8 +6,8 @@ import {
   acceptFriendRequest,
   denyFriendRequest,
 } from "@/lib/actions/users.action";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckIcon, UserIcon, XIcon } from "lucide-react";
-import { useTransition } from "react";
 import { toast } from "sonner";
 
 export default function Request({
@@ -21,30 +21,42 @@ export default function Request({
   username: string;
   email: string;
 }) {
-  const [isPending, startTransition] = useTransition();
+  const queryClient = useQueryClient();
 
-  const handleDenyFriend = async () => {
-    startTransition(async () => {
-      const res = await denyFriendRequest(id);
+  const { mutate: deny, isPending: isDening } = useMutation({
+    mutationFn: (id: string) => denyFriendRequest(id),
+    onSuccess: (res) => {
       if (!res.success) {
         toast.error(res.message);
         return;
       }
 
       toast.success(res.message);
-    });
+      queryClient.invalidateQueries({ queryKey: ["listFriendRequest"] });
+      queryClient.invalidateQueries({ queryKey: ["requestsFriendCount"] });
+    },
+  });
+
+  const { mutate: accept, isPending: isAcceping } = useMutation({
+    mutationFn: (id: string) => acceptFriendRequest(id),
+    onSuccess: (res) => {
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
+
+      toast.success(res.message);
+      queryClient.invalidateQueries({ queryKey: ["listFriendRequest"] });
+      queryClient.invalidateQueries({ queryKey: ["requestsFriendCount"] });
+    },
+  });
+
+  const handleDenyFriend = () => {
+    deny(id);
   };
 
-  const handleAcceptFriend = async () => {
-    startTransition(async () => {
-      const res = await acceptFriendRequest(id);
-      if (!res.success) {
-        toast.error(res.message);
-        return;
-      }
-
-      toast.success(res.message);
-    });
+  const handleAcceptFriend = () => {
+    accept(id);
   };
 
   return (
@@ -62,13 +74,13 @@ export default function Request({
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Button size="icon" onClick={handleAcceptFriend}>
+        <Button size="icon" onClick={handleAcceptFriend} disabled={isAcceping}>
           <CheckIcon />
         </Button>
         <Button
           variant="destructive"
           size="icon"
-          disabled={isPending}
+          disabled={isDening}
           onClick={handleDenyFriend}
         >
           <XIcon className=" h-4 w-4" />
