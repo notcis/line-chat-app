@@ -4,6 +4,7 @@ import { Loader2Icon } from "lucide-react";
 import Header from "./_components/header";
 import Body from "./_components/body/body";
 import ChatInput from "./_components/input/chat-input";
+import { getMessages } from "@/lib/actions/message.action";
 
 export default async function ConversationPage({
   params,
@@ -13,8 +14,7 @@ export default async function ConversationPage({
   const { conversationId } = await params;
 
   const conversation = await getConversation(conversationId);
-
-  console.log(conversation);
+  const messages = await getMessages({ conversationId });
 
   return conversation === undefined ? (
     <div className="w-full h-full flex items-center justify-center">
@@ -38,7 +38,7 @@ export default async function ConversationPage({
             : conversation.otherMember?.username) || ""
         }
       />
-      <Body />
+      <Body messages={messages} />
       <ChatInput />
     </ConversationContainer>
   );

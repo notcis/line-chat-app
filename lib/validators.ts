@@ -37,3 +37,7 @@ export const addFriendFormSchema = z.object({
     .min(1, "This field can't be empty")
     .email("Please enter a valid email"),
 });
+
+export const chatMessageSchema = z.object({
+  content: z.string().min(1, "This field can't be empty"),
+});
