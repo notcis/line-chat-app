@@ -3,7 +3,6 @@
 import { auth } from "@/auth";
 import { prisma } from "../prisma";
 import { formatError } from "../utils";
-import { revalidatePath } from "next/cache";
 
 export const createMessage = async ({
   conversationId,
@@ -57,8 +56,6 @@ export const createMessage = async ({
         lastMessageId: message.id,
       },
     });
-
-    revalidatePath(`/conversations/${conversationId}`);
 
     return {
       success: true,
