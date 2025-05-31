@@ -7,10 +7,11 @@ import { getFriendRequests } from "@/lib/actions/users.action";
 import { Loader2Icon } from "lucide-react";
 import Request from "./_components/request";
 import { useQuery } from "@tanstack/react-query";
+import { LIST_FRIEND_REQUEST } from "@/lib/constants";
 
 export default function Friendspage() {
   const { data } = useQuery({
-    queryKey: ["listFriendRequest"],
+    queryKey: [LIST_FRIEND_REQUEST],
     queryFn: getFriendRequests,
   });
 

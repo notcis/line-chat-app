@@ -6,6 +6,7 @@ import {
   acceptFriendRequest,
   denyFriendRequest,
 } from "@/lib/actions/users.action";
+import { COUNT_FRIEND_REQUEST, LIST_FRIEND_REQUEST } from "@/lib/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckIcon, UserIcon, XIcon } from "lucide-react";
 import { toast } from "sonner";
@@ -32,8 +33,8 @@ export default function Request({
       }
 
       toast.success(res.message);
-      queryClient.invalidateQueries({ queryKey: ["listFriendRequest"] });
-      queryClient.invalidateQueries({ queryKey: ["requestsFriendCount"] });
+      queryClient.invalidateQueries({ queryKey: [LIST_FRIEND_REQUEST] });
+      queryClient.invalidateQueries({ queryKey: [COUNT_FRIEND_REQUEST] });
     },
   });
 
@@ -46,16 +47,16 @@ export default function Request({
       }
 
       toast.success(res.message);
-      queryClient.invalidateQueries({ queryKey: ["listFriendRequest"] });
-      queryClient.invalidateQueries({ queryKey: ["requestsFriendCount"] });
+      queryClient.invalidateQueries({ queryKey: [LIST_FRIEND_REQUEST] });
+      queryClient.invalidateQueries({ queryKey: [COUNT_FRIEND_REQUEST] });
     },
   });
 
-  const handleDenyFriend = () => {
+  const handleDenyFriend = async () => {
     deny(id);
   };
 
-  const handleAcceptFriend = () => {
+  const handleAcceptFriend = async () => {
     accept(id);
   };
 

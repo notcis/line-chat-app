@@ -1,14 +1,21 @@
+"use client";
+
 import ItemList from "@/components/shared/item-list/item-list";
 import { getConversations } from "@/lib/actions/conversations.action";
 import { Loader2Icon } from "lucide-react";
 import DmConversationItem from "./_components/dm-conversation-item";
+import { useQuery } from "@tanstack/react-query";
+import { LIST_CONVERSATIONS } from "@/lib/constants";
 
-export default async function ConversationsLayout({
+export default function ConversationsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const conversations = await getConversations();
+  const { data: conversations } = useQuery({
+    queryKey: [LIST_CONVERSATIONS],
+    queryFn: getConversations,
+  });
 
   return (
     <>
@@ -31,7 +38,7 @@ export default async function ConversationsLayout({
             )
           )
         ) : (
-          <Loader2Icon />
+          <Loader2Icon className="w-8 h-8 animate-spin" />
         )}
       </ItemList>
 

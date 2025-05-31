@@ -20,11 +20,15 @@ import { z } from "zod";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "@/components/ui/button";
 import { SendHorizonalIcon } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { MESSAGES } from "@/lib/constants";
 
 export default function ChatInput() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const { conversationId } = useConversation();
+
+  const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof chatMessageSchema>>({
     resolver: zodResolver(chatMessageSchema),
@@ -33,18 +37,32 @@ export default function ChatInput() {
     },
   });
 
+  const { mutate, isPending } = useMutation({
+    mutationFn: ({
+      conversationId,
+      type,
+      content,
+    }: {
+      conversationId: string;
+      type: string;
+      content: string[];
+    }) => createMessage({ conversationId, type, content }),
+    onSuccess: (res) => {
+      if (!res.success) {
+        toast.error(res.message);
+        return;
+      }
+      form.reset();
+      queryClient.invalidateQueries({ queryKey: [MESSAGES, conversationId] });
+    },
+  });
+
   const handleSubmit = async (values: z.infer<typeof chatMessageSchema>) => {
-    const res = await createMessage({
+    mutate({
       conversationId: conversationId as string,
       type: "text",
       content: [values.content],
     });
-
-    if (!res.success) {
-      toast.error(res.message);
-      return;
-    }
-    form.reset();
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -92,11 +110,7 @@ export default function ChatInput() {
                 </FormItem>
               )}
             />
-            <Button
-              disabled={form.formState.isSubmitting}
-              size="icon"
-              type="submit"
-            >
+            <Button disabled={isPending} size="icon" type="submit">
               <SendHorizonalIcon />
             </Button>
           </form>

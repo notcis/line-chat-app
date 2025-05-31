@@ -25,6 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { addFriendRequest } from "@/lib/actions/users.action";
+import { COUNT_FRIEND_REQUEST, LIST_FRIEND_REQUEST } from "@/lib/constants";
 import { addFriendFormSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -52,8 +53,8 @@ export default function AddFriendDialog() {
 
       toast.success(res.message);
       form.reset();
-      queryClient.invalidateQueries({ queryKey: ["listFriendRequest"] });
-      queryClient.invalidateQueries({ queryKey: ["requestsFriendCount"] });
+      queryClient.invalidateQueries({ queryKey: [LIST_FRIEND_REQUEST] });
+      queryClient.invalidateQueries({ queryKey: [COUNT_FRIEND_REQUEST] });
     },
   });
 
