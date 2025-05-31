@@ -9,12 +9,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/lib/actions/users.action";
+import { useQueryClient } from "@tanstack/react-query";
 import { LogOutIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 export default function UserButton() {
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
+  const queryClient = useQueryClient();
 
   if (status === "loading") return <p>Loading...</p>;
 
@@ -31,8 +33,8 @@ export default function UserButton() {
   const firstInitial = session?.user?.name?.charAt(0).toUpperCase() || "U";
 
   const handleLogout = async () => {
+    queryClient.removeQueries();
     await logout();
-    await update();
   };
 
   return (

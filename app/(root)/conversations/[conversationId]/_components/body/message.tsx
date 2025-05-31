@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { cn, formatTime } from "@/lib/utils";
 
 type Props = {
   formCurrentUser: boolean;
@@ -8,7 +7,7 @@ type Props = {
   senderName: string;
   lastByUser: boolean;
   content: string[];
-  createAt: number;
+  createAt: Date;
   type: string;
 };
 
@@ -21,9 +20,7 @@ export default function Message({
   createAt,
   type,
 }: Props) {
-  const formatTime = (timestamp: number) => {
-    return format(timestamp, "HH:MM");
-  };
+  console.log(createAt);
 
   return (
     <div className={cn("flex items-end", { "justify-end": formCurrentUser })}>

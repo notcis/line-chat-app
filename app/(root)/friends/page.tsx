@@ -3,11 +3,11 @@
 import ConversationFallback from "@/components/shared/conversation/conversation-fallback";
 import ItemList from "@/components/shared/item-list/item-list";
 import AddFriendDialog from "./_components/add-friend-dialog";
-import { getFriendRequests } from "@/lib/actions/users.action";
 import { Loader2Icon } from "lucide-react";
 import Request from "./_components/request";
 import { useQuery } from "@tanstack/react-query";
 import { LIST_FRIEND_REQUEST } from "@/lib/constants";
+import { getFriendRequests } from "@/lib/actions/requests.action";
 
 export default function Friendspage() {
   const { data } = useQuery({

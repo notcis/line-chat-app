@@ -33,6 +33,8 @@ export default function ConversationsLayout({
                   id={conversation.conversation.id}
                   username={conversation.otherMember?.username || ""}
                   imageUrl={conversation.otherMember?.imageUrl || ""}
+                  lastMessageContent={conversation.lastMessage?.content}
+                  lastMessageSender={conversation.lastMessage?.sender}
                 />
               )
             )

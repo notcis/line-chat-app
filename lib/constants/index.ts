@@ -6,3 +6,4 @@ export const COUNT_FRIEND_REQUEST = "count-friend-request";
 
 export const LIST_CONVERSATIONS = "list_conversations";
 export const MESSAGES = "messages";
+export const CONVERSATION = "conversation";

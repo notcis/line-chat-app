@@ -5,8 +5,12 @@ import { Card } from "@/components/ui/card";
 import {
   acceptFriendRequest,
   denyFriendRequest,
-} from "@/lib/actions/users.action";
-import { COUNT_FRIEND_REQUEST, LIST_FRIEND_REQUEST } from "@/lib/constants";
+} from "@/lib/actions/request.action";
+import {
+  COUNT_FRIEND_REQUEST,
+  LIST_CONVERSATIONS,
+  LIST_FRIEND_REQUEST,
+} from "@/lib/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckIcon, UserIcon, XIcon } from "lucide-react";
 import { toast } from "sonner";
@@ -35,6 +39,7 @@ export default function Request({
       toast.success(res.message);
       queryClient.invalidateQueries({ queryKey: [LIST_FRIEND_REQUEST] });
       queryClient.invalidateQueries({ queryKey: [COUNT_FRIEND_REQUEST] });
+      queryClient.invalidateQueries({ queryKey: [LIST_CONVERSATIONS] });
     },
   });
 
@@ -49,6 +54,7 @@ export default function Request({
       toast.success(res.message);
       queryClient.invalidateQueries({ queryKey: [LIST_FRIEND_REQUEST] });
       queryClient.invalidateQueries({ queryKey: [COUNT_FRIEND_REQUEST] });
+      queryClient.invalidateQueries({ queryKey: [LIST_CONVERSATIONS] });
     },
   });
 

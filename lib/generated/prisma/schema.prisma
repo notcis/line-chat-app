@@ -58,9 +58,9 @@ model friends {
 
   conversation conversations @relation(fields: [conversationId], references: [id])
 
+  @@unique([conversationId])
   @@index([user1Id], name: "by_user1")
   @@index([user2Id], name: "by_user2")
-  @@index([conversationId], name: "by_conversationId")
 }
 
 model conversations {

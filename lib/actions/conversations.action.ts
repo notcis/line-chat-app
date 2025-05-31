@@ -38,7 +38,6 @@ export async function getConversations() {
   const conversationsWithDetails = await Promise.all(
     conversationMemberships.map(async (membership) => {
       const conversation = membership.conversation;
-      const lastMessage = conversation.lastMessage;
 
       const lastSeenTime = membership.lastSeenMessage?.createdAt ?? new Date(0);
 
@@ -56,6 +55,10 @@ export async function getConversations() {
       });
 
       const unseenCount = unseenMessages.length;
+
+      const lastMessage = await getLastMessageDetails({
+        messageId: conversation.lastMessageId as string,
+      });
 
       // 4. แยก logic group vs private chat
       if (conversation.isGroup) {
@@ -82,81 +85,46 @@ export async function getConversations() {
   return conversationsWithDetails;
 }
 
-export async function getConversation(conversationId: string) {
-  const session = await auth();
+const getLastMessageDetails = async ({
+  messageId,
+}: {
+  messageId: string | undefined;
+}) => {
+  if (!messageId) return null;
 
-  if (!session) throw new Error("Unauthorized");
-
-  const currentUser = await prisma.users.findFirst({
+  const message = await prisma.messages.findUnique({
     where: {
-      id: session.user?.id,
-    },
-  });
-
-  if (!currentUser) throw new Error("User not found");
-
-  const conversation = await prisma.conversations.findUnique({
-    where: {
-      id: conversationId,
-    },
-  });
-
-  if (!conversation) {
-    throw new Error("Conversation not found");
-  }
-
-  const membership = await prisma.conversationMembers.findUnique({
-    where: {
-      by_memberId_conversationId: {
-        memberId: currentUser.id,
-        conversationId: conversationId,
-      },
-    },
-  });
-
-  if (!membership) {
-    throw new Error("You aren't a member of this conversation");
-  }
-
-  const allConversationMemberships = await prisma.conversationMembers.findMany({
-    where: {
-      conversationId: conversationId,
+      id: messageId,
     },
     include: {
-      member: true,
+      sender: true,
     },
   });
 
-  if (!conversation.isGroup) {
-    const otherMembership = allConversationMemberships.find(
-      (m) => m.memberId !== currentUser.id
-    );
+  if (!message || !message.sender) return null;
 
-    if (!otherMembership || !otherMembership.member) {
-      throw new Error("Other member not found");
-    }
+  const content = getMessageContent(
+    message.type,
+    message.content as unknown as string
+  );
 
-    return {
-      ...conversation,
-      otherMember: {
-        ...otherMembership.member,
-        lastSeenMessageId: otherMembership.lastSeenMessageId,
-      },
-      otherMembers: null,
-    };
-  } else {
-    const otherMembers = allConversationMemberships
-      .filter((m) => m.memberId !== currentUser.id)
-      .map((m) => ({
-        id: m.member.id,
-        username: m.member.username,
-        lastSeenMessageId: m.lastSeenMessageId,
-      }));
+  return {
+    content,
+    sender: message.sender.username,
+  };
+};
 
-    return {
-      ...conversation,
-      otherMembers,
-      otherMember: null,
-    };
+const getMessageContent = (type: string, content: string) => {
+  switch (type) {
+    case "text":
+      return content;
+    case "image":
+      return "[Image]";
+    case "file":
+      return "[File]";
+    case "call":
+      return "[Call]";
+    default:
+      return content;
   }
-}
+};

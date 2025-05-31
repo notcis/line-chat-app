@@ -21,7 +21,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "@/components/ui/button";
 import { SendHorizonalIcon } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { MESSAGES } from "@/lib/constants";
+import { LIST_CONVERSATIONS, MESSAGES } from "@/lib/constants";
 
 export default function ChatInput() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -54,6 +54,7 @@ export default function ChatInput() {
       }
       form.reset();
       queryClient.invalidateQueries({ queryKey: [MESSAGES, conversationId] });
+      queryClient.invalidateQueries({ queryKey: [LIST_CONVERSATIONS] });
     },
   });
 

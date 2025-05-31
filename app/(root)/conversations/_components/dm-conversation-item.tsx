@@ -6,10 +6,14 @@ export default function DmConversationItem({
   id,
   username,
   imageUrl,
+  lastMessageSender,
+  lastMessageContent,
 }: {
   id: string;
   username: string;
   imageUrl: string;
+  lastMessageSender?: string;
+  lastMessageContent?: string;
 }) {
   const firstInitial = username.charAt(0).toUpperCase() || "U";
 
@@ -23,9 +27,21 @@ export default function DmConversationItem({
           </Avatar>
           <div className="flex flex-col truncate">
             <h4 className=" truncate">{username}</h4>
-            <p className=" text-sm text-muted-foreground truncate">
-              Start the conversation!
-            </p>
+            {lastMessageSender && lastMessageContent ? (
+              <span className="text-sm text-muted-foreground flex truncate overflow-ellipsis">
+                <p className=" font-semibold">
+                  {lastMessageSender}
+                  {":"}&nbsp;
+                </p>
+                <p className="truncate overflow-ellipsis">
+                  {lastMessageContent}
+                </p>
+              </span>
+            ) : (
+              <p className=" text-sm text-muted-foreground truncate">
+                Start the conversation!
+              </p>
+            )}
           </div>
         </div>
       </Card>

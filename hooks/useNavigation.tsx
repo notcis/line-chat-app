@@ -1,4 +1,4 @@
-import { getFriendCount } from "@/lib/actions/users.action";
+import { getFriendCount } from "@/lib/actions/requests.action";
 import { COUNT_FRIEND_REQUEST } from "@/lib/constants";
 import { useQuery } from "@tanstack/react-query";
 import { MessageSquareIcon, UsersIcon } from "lucide-react";

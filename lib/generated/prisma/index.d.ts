@@ -7798,17 +7798,17 @@ export namespace Prisma {
 
   export type friendsWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    conversationId?: string
     AND?: friendsWhereInput | friendsWhereInput[]
     OR?: friendsWhereInput[]
     NOT?: friendsWhereInput | friendsWhereInput[]
     user1Id?: StringFilter<"friends"> | string
     user2Id?: StringFilter<"friends"> | string
-    conversationId?: StringFilter<"friends"> | string
     createdAt?: DateTimeFilter<"friends"> | Date | string
     user1?: XOR<UsersScalarRelationFilter, usersWhereInput>
     user2?: XOR<UsersScalarRelationFilter, usersWhereInput>
     conversation?: XOR<ConversationsScalarRelationFilter, conversationsWhereInput>
-  }, "id">
+  }, "id" | "conversationId">
 
   export type friendsOrderByWithAggregationInput = {
     id?: SortOrder

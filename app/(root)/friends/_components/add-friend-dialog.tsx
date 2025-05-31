@@ -24,7 +24,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { addFriendRequest } from "@/lib/actions/users.action";
+import { addFriendRequest } from "@/lib/actions/request.action";
 import { COUNT_FRIEND_REQUEST, LIST_FRIEND_REQUEST } from "@/lib/constants";
 import { addFriendFormSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";

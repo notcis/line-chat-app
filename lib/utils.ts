@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { th } from "date-fns/locale";
+import { format } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -26,3 +28,7 @@ export function formatError(error: any) {
       : JSON.stringify(error.message);
   }
 }
+
+export const formatTime = (timestamp: Date) => {
+  return format(timestamp, "HH:mm", { locale: th });
+};
