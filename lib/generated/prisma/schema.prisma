@@ -19,7 +19,7 @@ model users {
   imageUrl  String?
   username  String?
   password  String?
-  lineId    String   @unique
+  lineId    String?
   email     String?
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @default(now()) @db.Timestamp(6)
