@@ -30,7 +30,7 @@ export default function Friendspage() {
                 id={request.id}
                 imageUrl={request.sender.imageUrl || undefined}
                 username={request.sender.username!}
-                email={request.sender.email}
+                email={request.sender.email || ""}
               />
             ))
           )
