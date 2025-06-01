@@ -35,7 +35,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const passwordCorrect = compareSync(
           credentials.password as string,
-          user.password
+          user.password as string
         );
 
         if (!passwordCorrect) throw new Error("Incorrect credentials");
