@@ -22,9 +22,10 @@ export async function POST(request: NextRequest) {
     });
 
     let conversationId;
+    let currentUserId;
 
     if (!lineUser) {
-      conversationId = await prisma.$transaction(async (tx) => {
+      const resData = await prisma.$transaction(async (tx) => {
         const currentUser = await tx.users.create({
           data: {
             lineId: receive.lineId,
@@ -60,14 +61,59 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        return conversation.id;
+        return {
+          conversationId: conversation.id,
+          currentUserId: currentUser.id,
+        };
       });
+
+      currentUserId = resData.currentUserId;
+      conversationId = resData.conversationId;
     } else {
+      currentUserId = lineUser.id;
+      conversationId = await prisma.friends.findFirst({
+        where: {
+          user1Id: currentUserId,
+        },
+        select: { conversationId: true },
+      });
     }
-    return NextResponse.json({
-      data: {
-        conversationId,
+
+    if (!conversationId && !currentUserId)
+      throw new Error("can not find conversation");
+
+    const membership = await prisma.conversationMembers.findUnique({
+      where: {
+        by_memberId_conversationId: {
+          memberId: currentUserId,
+          conversationId: conversationId as string,
+        },
       },
+    });
+
+    if (!membership) {
+      throw new Error("You aren't a member of this conversation");
+    }
+
+    const message = await prisma.messages.create({
+      data: {
+        senderId: currentUserId,
+        conversationId: conversationId as string,
+        type: "text",
+        content: [userMessage],
+      },
+    });
+
+    await prisma.conversations.update({
+      where: {
+        id: conversationId as string,
+      },
+      data: {
+        lastMessageId: message.id,
+      },
+    });
+
+    return NextResponse.json({
       message: "success",
     });
   } catch (error) {
