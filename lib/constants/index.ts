@@ -4,7 +4,7 @@ export const APP_DESC = "ระบบสนทนาสหกรณ์ออม�
 export const LIST_FRIEND_REQUEST = "list-friend-request";
 export const COUNT_FRIEND_REQUEST = "count-friend-request";
 
-export const LIST_CONVERSATIONS = "list_conversations";
+export const LIST_CONVERSATIONS = "list-conversations";
 export const MESSAGES = "messages";
 export const CONVERSATION = "conversation";
 

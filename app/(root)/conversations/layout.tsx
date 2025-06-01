@@ -15,6 +15,8 @@ export default function ConversationsLayout({
   const { data: conversations } = useQuery({
     queryKey: [LIST_CONVERSATIONS],
     queryFn: getConversations,
+    refetchInterval: 5000,
+    refetchOnWindowFocus: false,
   });
 
   return (
