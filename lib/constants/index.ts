@@ -7,3 +7,5 @@ export const COUNT_FRIEND_REQUEST = "count-friend-request";
 export const LIST_CONVERSATIONS = "list_conversations";
 export const MESSAGES = "messages";
 export const CONVERSATION = "conversation";
+
+export const ADMIN_ID = "cde734ba-1139-421a-b606-7c2c115d011b";
