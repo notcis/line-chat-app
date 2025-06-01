@@ -5,11 +5,13 @@ export const sampleData = {
       email: "notcis07@gmail.com",
       username: "Notcis",
       password: hashSync("49310407", 10),
+      lineId: "123456",
     },
     {
       email: "ploy@gmail.com",
-      username: "Ploy",
+      username: "Ploy Kitta",
       password: hashSync("49310407", 10),
+      lineId: "654321",
     },
   ],
 };

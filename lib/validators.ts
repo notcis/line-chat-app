@@ -41,3 +41,10 @@ export const addFriendFormSchema = z.object({
 export const chatMessageSchema = z.object({
   content: z.string().min(1, "This field can't be empty"),
 });
+
+export const receiveLineMessageApiSchema = z.object({
+  lineId: z.string().min(1, "lineId require"),
+  username: z.string().min(1, "displayName require"),
+  imageUrl: z.string().min(1, "pictureUrl require"),
+  userMessage: z.string().min(1, "userMessage require"),
+});
