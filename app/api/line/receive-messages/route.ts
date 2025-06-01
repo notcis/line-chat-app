@@ -71,12 +71,14 @@ export async function POST(request: NextRequest) {
       conversationId = resData.conversationId;
     } else {
       currentUserId = lineUser.id;
-      conversationId = await prisma.friends.findFirst({
+      const conversation = await prisma.friends.findFirst({
         where: {
           user1Id: currentUserId,
         },
         select: { conversationId: true },
       });
+
+      conversationId = conversation?.conversationId;
     }
 
     if (!conversationId && !currentUserId)
