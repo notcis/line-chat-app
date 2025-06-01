@@ -5,7 +5,8 @@ import { receiveLineMessageApiSchema } from "@/lib/validators";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const { lineId, displayName, pictureUrl, userMessage } = await request.json();
+  const { lineId, displayName, pictureUrl, userMessage, messageType } =
+    await request.json();
 
   try {
     const receive = receiveLineMessageApiSchema.parse({
@@ -13,6 +14,7 @@ export async function POST(request: NextRequest) {
       imageUrl: pictureUrl,
       username: displayName,
       userMessage,
+      messageType,
     });
 
     const lineUser = await prisma.users.findFirst({
@@ -101,8 +103,8 @@ export async function POST(request: NextRequest) {
       data: {
         senderId: currentUserId,
         conversationId: conversationId as string,
-        type: "text",
-        content: [userMessage],
+        type: receive.messageType,
+        content: [receive.userMessage],
       },
     });
 

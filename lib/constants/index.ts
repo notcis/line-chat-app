@@ -9,3 +9,4 @@ export const MESSAGES = "messages";
 export const CONVERSATION = "conversation";
 
 export const ADMIN_ID = "cde734ba-1139-421a-b606-7c2c115d011b";
+export const LINE_MESSAGE_TYPE = ["text", "image"];

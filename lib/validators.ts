@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LINE_MESSAGE_TYPE } from "./constants";
 
 const passwordSchema = z
   .string()
@@ -47,4 +48,7 @@ export const receiveLineMessageApiSchema = z.object({
   username: z.string().min(1, "displayName require"),
   imageUrl: z.string().min(1, "pictureUrl require"),
   userMessage: z.string().min(1, "userMessage require"),
+  messageType: z.string().refine((type) => LINE_MESSAGE_TYPE.includes(type), {
+    message: "Invalid message type",
+  }),
 });

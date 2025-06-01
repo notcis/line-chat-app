@@ -57,6 +57,33 @@ export const createMessage = async ({
       },
     });
 
+    const receiveUser = await prisma.friends.findFirst({
+      where: {
+        conversationId: conversationId,
+      },
+      select: {
+        user1: {
+          select: {
+            lineId: true,
+          },
+        },
+      },
+    });
+
+    if (receiveUser?.user1.lineId) {
+      await fetch("https://api.line.me/v2/bot/message/push", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.CHANNEL_ACCESS_TOKEN}`,
+        },
+        body: JSON.stringify({
+          to: receiveUser?.user1.lineId,
+          messages: [{ type: type, text: content.at(0) }],
+        }),
+      });
+    }
+
     return {
       success: true,
       message,
