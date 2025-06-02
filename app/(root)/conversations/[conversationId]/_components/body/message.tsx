@@ -8,6 +8,7 @@ type Props = {
   lastByUser: boolean;
   content: string[];
   createAt: Date;
+  seen?: React.ReactNode;
   type: string;
 };
 
@@ -18,10 +19,9 @@ export default function Message({
   lastByUser,
   content,
   createAt,
+  seen,
   type,
 }: Props) {
-  console.log(createAt);
-
   return (
     <div className={cn("flex items-end", { "justify-end": formCurrentUser })}>
       <div
@@ -39,7 +39,7 @@ export default function Message({
           })}
         >
           {type === "text" ? (
-            <p className=" text-wrap break-words whitespace-pre-wrap">
+            <p className=" text-wrap break-words whitespace-pre-wrap break-all">
               {content}
             </p>
           ) : null}
@@ -52,6 +52,7 @@ export default function Message({
             {formatTime(createAt)}
           </p>
         </div>
+        {seen}
       </div>
       <Avatar
         className={cn(
@@ -60,7 +61,7 @@ export default function Message({
             "order-2": formCurrentUser,
             "order-1": !formCurrentUser,
           },
-          { lastByUser: "invisible" }
+          { invisible: lastByUser }
         )}
       >
         <AvatarImage src={senderImage} />

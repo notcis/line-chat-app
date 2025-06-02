@@ -1,35 +1,32 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
 
-export default function DmConversationItem({
+export default function GroupConversationItem({
   id,
-  username,
-  imageUrl,
+  name,
   lastMessageSender,
   lastMessageContent,
   unseenCount,
 }: {
   id: string;
-  username: string;
-  imageUrl: string;
+  name: string;
   lastMessageSender?: string;
   lastMessageContent?: string;
   unseenCount: number;
 }) {
-  const firstInitial = username.charAt(0).toUpperCase() || "U";
-
   return (
     <Link href={`/conversations/${id}`} className="w-full">
       <Card className="p-2 flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-4 truncate">
           <Avatar>
-            <AvatarImage src={imageUrl} />
-            <AvatarFallback>{firstInitial}</AvatarFallback>
+            <AvatarFallback>
+              {name.charAt(0).toLocaleUpperCase()}
+            </AvatarFallback>
           </Avatar>
           <div className="flex flex-col truncate">
-            <h4 className=" truncate">{username}</h4>
+            <h4 className=" truncate">{name}</h4>
             {lastMessageSender && lastMessageContent ? (
               <span className="text-sm text-muted-foreground flex truncate overflow-ellipsis">
                 <p className=" font-semibold">

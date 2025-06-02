@@ -17,11 +17,11 @@ export default function Friendspage() {
 
   return (
     <>
-      <ItemList title="Friends" action={<AddFriendDialog />}>
+      <ItemList title="เพิ่มเพื่อนคุย" action={<AddFriendDialog />}>
         {data?.requests ? (
           data?.requests.length === 0 ? (
             <p className=" w-full h-full flex items-center justify-center">
-              No friend requests found
+              ไม่มีเพื่อนส่งคำขอมาจร้า
             </p>
           ) : (
             data.requests.map((request) => (

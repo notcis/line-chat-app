@@ -6,6 +6,8 @@ import { Loader2Icon } from "lucide-react";
 import DmConversationItem from "./_components/dm-conversation-item";
 import { useQuery } from "@tanstack/react-query";
 import { LIST_CONVERSATIONS } from "@/lib/constants";
+import CreateGroupDialog from "./_components/create-group-dialog";
+import GroupConversationItem from "./_components/group-conversation-item";
 
 export default function ConversationsLayout({
   children,
@@ -21,7 +23,7 @@ export default function ConversationsLayout({
 
   return (
     <>
-      <ItemList title="Conversations">
+      <ItemList title="พูดคุยกัน" action={<CreateGroupDialog />}>
         {conversations ? (
           conversations.length === 0 ? (
             <p className="w-full h-full flex items-center justify-center">
@@ -29,7 +31,18 @@ export default function ConversationsLayout({
             </p>
           ) : (
             conversations.map((conversation) =>
-              conversation.conversation.isGroup ? null : (
+              conversation.conversation.isGroup ? (
+                <GroupConversationItem
+                  key={conversation.conversation.id}
+                  id={conversation.conversation.id}
+                  name={conversation.conversation.name || ""}
+                  lastMessageContent={conversation.lastMessage?.content}
+                  lastMessageSender={
+                    conversation.lastMessage?.sender || undefined
+                  }
+                  unseenCount={conversation.unseenCount}
+                />
+              ) : (
                 <DmConversationItem
                   key={conversation.conversation.id}
                   id={conversation.conversation.id}
@@ -39,6 +52,7 @@ export default function ConversationsLayout({
                   lastMessageSender={
                     conversation.lastMessage?.sender || undefined
                   }
+                  unseenCount={conversation.unseenCount}
                 />
               )
             )

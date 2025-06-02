@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     let conversationId;
     let currentUserId;
 
-    if (!lineUser) {
+    if (!lineUser?.lineId && !lineUser) {
       const resData = await prisma.$transaction(async (tx) => {
         const currentUser = await tx.users.create({
           data: {

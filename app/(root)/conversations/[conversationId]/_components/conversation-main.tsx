@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import ConversationContainer from "@/components/shared/conversation/conversation-container";
@@ -11,6 +10,8 @@ import { getConversation } from "@/lib/actions/conversation.action";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import RemoveFriendDialog from "./dialogs/remove-friend-dialog";
+import DeleteGroupDialog from "./dialogs/delete-group-dialog";
+import LeaveGroupDialog from "./dialogs/leave-group-dialog";
 
 export default function ConversationMain({
   conversationId,
@@ -20,6 +21,7 @@ export default function ConversationMain({
   const [removeFriendDialogOpen, setRemoveFriendDialogOpen] = useState(false);
   const [deleteGroupDialogOpen, setDeleteGroupDialogOpen] = useState(false);
   const [leaveGroupDialogOpen, setLeaveGroupDialogOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [callType, setCallType] = useState<"audio" | "video" | null>(null);
 
   const { data: conversation } = useQuery({
@@ -41,6 +43,16 @@ export default function ConversationMain({
         conversationId={conversationId}
         open={removeFriendDialogOpen}
         setOpen={setRemoveFriendDialogOpen}
+      />
+      <DeleteGroupDialog
+        conversationId={conversationId}
+        open={deleteGroupDialogOpen}
+        setOpen={setDeleteGroupDialogOpen}
+      />
+      <LeaveGroupDialog
+        conversationId={conversationId}
+        open={leaveGroupDialogOpen}
+        setOpen={setLeaveGroupDialogOpen}
       />
       <Header
         imageUrl={
@@ -76,7 +88,28 @@ export default function ConversationMain({
               ]
         }
       />
-      <Body />
+      <Body
+        members={
+          conversation.isGroup
+            ? conversation.otherMembers
+              ? conversation.otherMembers.map((member) => ({
+                  ...member,
+                  lastSeenMessageId: member.lastSeenMessageId ?? undefined,
+                  username: member.username ?? undefined,
+                }))
+              : []
+            : conversation.otherMember
+            ? [
+                {
+                  ...conversation.otherMember,
+                  lastSeenMessageId:
+                    conversation.otherMember.lastSeenMessageId ?? undefined,
+                  username: conversation.otherMember.username ?? undefined,
+                },
+              ]
+            : []
+        }
+      />
       <ChatInput />
     </ConversationContainer>
   );
