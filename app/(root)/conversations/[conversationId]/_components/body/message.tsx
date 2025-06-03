@@ -12,6 +12,7 @@ type Props = {
   createAt: Date;
   seen?: React.ReactNode;
   type: string;
+  name?: string[];
 };
 
 export default function Message({
@@ -23,6 +24,7 @@ export default function Message({
   createAt,
   seen,
   type,
+  name,
 }: Props) {
   return (
     <div className={cn("flex items-end", { "justify-end": formCurrentUser })}>
@@ -45,7 +47,9 @@ export default function Message({
               {content}
             </p>
           ) : null}
-          {type === "image" ? <ImagePreview urls={content} /> : null}
+          {type === "image" ? (
+            <ImagePreview urls={content} names={name} />
+          ) : null}
           {type === "file" ? <FilePreview url={content[0]} /> : null}
           <p
             className={cn("text-xs flex w-full my-1", {

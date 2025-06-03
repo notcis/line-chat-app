@@ -8,7 +8,13 @@ import {
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
-export default function ImagePreview({ urls }: { urls: string[] }) {
+export default function ImagePreview({
+  urls,
+  names,
+}: {
+  urls: string[];
+  names?: string[];
+}) {
   const isVideoFile = (filename: string) => {
     const videoFilePattern = /\.(mp4|webm|ogg|mov)/i;
 
@@ -22,7 +28,7 @@ export default function ImagePreview({ urls }: { urls: string[] }) {
       })}
     >
       {urls.map((url, index) => {
-        const isVideo = isVideoFile(url);
+        const isVideo = isVideoFile(names?.at(index) ?? "");
 
         return (
           <Dialog key={index}>

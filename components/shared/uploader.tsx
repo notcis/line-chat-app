@@ -5,13 +5,19 @@ export default function Uploader({
   onChange,
   type,
 }: {
-  onChange: (urls: string[]) => void;
+  onChange: (files: { url: string; name: string }[]) => void;
   type: "image" | "file";
 }) {
   return (
     <UploadDropzone
       endpoint={type}
-      onClientUploadComplete={(res) => onChange(res.map((item) => item.ufsUrl))}
+      onClientUploadComplete={(res) => {
+        const files = res.map((item) => ({
+          url: item.ufsUrl,
+          name: item.name,
+        }));
+        onChange(files);
+      }}
       onUploadError={(error: Error) => {
         toast.error(error.message);
       }}

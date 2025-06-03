@@ -45,6 +45,7 @@ export default function UploadFileDailog({
     resolver: zodResolver(uploadFileSchema),
     defaultValues: {
       files: [],
+      names: [],
     },
   });
 
@@ -53,11 +54,13 @@ export default function UploadFileDailog({
       conversationId,
       type,
       content,
+      name,
     }: {
       conversationId: string;
       type: string;
       content: string[];
-    }) => createMessage({ conversationId, type, content }),
+      name: string[];
+    }) => createMessage({ conversationId, type, content, name }),
     onSuccess: (res) => {
       if (!res.success) {
         toast.error(res.message);
@@ -78,10 +81,12 @@ export default function UploadFileDailog({
       conversationId: conversationId as string,
       type,
       content: values.files,
+      name: values.names,
     });
   };
 
   const files = form.watch("files");
+  const names = form.watch("names");
 
   return (
     <Dialog open={open} onOpenChange={(open) => toggle(open)}>
@@ -112,8 +117,15 @@ export default function UploadFileDailog({
                     <div className="py-4">
                       <Uploader
                         type={type}
-                        onChange={(urls) => {
-                          form.setValue("files", [...files, ...urls]);
+                        onChange={(uploadedFiles) => {
+                          form.setValue("files", [
+                            ...files,
+                            ...uploadedFiles.map((f) => f.url),
+                          ]);
+                          form.setValue("names", [
+                            ...names,
+                            ...uploadedFiles.map((f) => f.name),
+                          ]);
                         }}
                       />
                     </div>
@@ -121,6 +133,11 @@ export default function UploadFileDailog({
                   <FormMessage />
                 </FormItem>
               )}
+            />
+            <FormField
+              control={form.control}
+              name="names"
+              render={({ field }) => <input type="hidden" {...field} />}
             />
             <DialogFooter>
               <Button type="submit" disabled={!files.length || isPending}>

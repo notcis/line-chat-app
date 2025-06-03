@@ -6449,6 +6449,7 @@ export namespace Prisma {
     conversationId: number
     type: number
     content: number
+    name: number
     createdAt: number
     _all: number
   }
@@ -6476,6 +6477,7 @@ export namespace Prisma {
     conversationId?: true
     type?: true
     content?: true
+    name?: true
     createdAt?: true
     _all?: true
   }
@@ -6558,6 +6560,7 @@ export namespace Prisma {
     conversationId: string
     type: string
     content: JsonValue
+    name: JsonValue | null
     createdAt: Date
     _count: MessagesCountAggregateOutputType | null
     _min: MessagesMinAggregateOutputType | null
@@ -6584,6 +6587,7 @@ export namespace Prisma {
     conversationId?: boolean
     type?: boolean
     content?: boolean
+    name?: boolean
     createdAt?: boolean
     sender?: boolean | usersDefaultArgs<ExtArgs>
     conversation?: boolean | conversationsDefaultArgs<ExtArgs>
@@ -6600,10 +6604,11 @@ export namespace Prisma {
     conversationId?: boolean
     type?: boolean
     content?: boolean
+    name?: boolean
     createdAt?: boolean
   }
 
-  export type messagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "senderId" | "conversationId" | "type" | "content" | "createdAt", ExtArgs["result"]["messages"]>
+  export type messagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "senderId" | "conversationId" | "type" | "content" | "name" | "createdAt", ExtArgs["result"]["messages"]>
   export type messagesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sender?: boolean | usersDefaultArgs<ExtArgs>
     conversation?: boolean | conversationsDefaultArgs<ExtArgs>
@@ -6626,6 +6631,7 @@ export namespace Prisma {
       conversationId: string
       type: string
       content: Prisma.JsonValue
+      name: Prisma.JsonValue | null
       createdAt: Date
     }, ExtArgs["result"]["messages"]>
     composites: {}
@@ -7005,6 +7011,7 @@ export namespace Prisma {
     readonly conversationId: FieldRef<"messages", 'String'>
     readonly type: FieldRef<"messages", 'String'>
     readonly content: FieldRef<"messages", 'Json'>
+    readonly name: FieldRef<"messages", 'Json'>
     readonly createdAt: FieldRef<"messages", 'DateTime'>
   }
     
@@ -7492,6 +7499,7 @@ export namespace Prisma {
     conversationId: 'conversationId',
     type: 'type',
     content: 'content',
+    name: 'name',
     createdAt: 'createdAt'
   };
 
@@ -7511,6 +7519,14 @@ export namespace Prisma {
   };
 
   export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const NullsOrder: {
@@ -7987,6 +8003,7 @@ export namespace Prisma {
     conversationId?: StringFilter<"messages"> | string
     type?: StringFilter<"messages"> | string
     content?: JsonFilter<"messages">
+    name?: JsonNullableFilter<"messages">
     createdAt?: DateTimeFilter<"messages"> | Date | string
     sender?: XOR<UsersScalarRelationFilter, usersWhereInput>
     conversation?: XOR<ConversationsScalarRelationFilter, conversationsWhereInput>
@@ -8000,6 +8017,7 @@ export namespace Prisma {
     conversationId?: SortOrder
     type?: SortOrder
     content?: SortOrder
+    name?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     sender?: usersOrderByWithRelationInput
     conversation?: conversationsOrderByWithRelationInput
@@ -8017,6 +8035,7 @@ export namespace Prisma {
     conversationId?: StringFilter<"messages"> | string
     type?: StringFilter<"messages"> | string
     content?: JsonFilter<"messages">
+    name?: JsonNullableFilter<"messages">
     createdAt?: DateTimeFilter<"messages"> | Date | string
     sender?: XOR<UsersScalarRelationFilter, usersWhereInput>
     conversation?: XOR<ConversationsScalarRelationFilter, conversationsWhereInput>
@@ -8030,6 +8049,7 @@ export namespace Prisma {
     conversationId?: SortOrder
     type?: SortOrder
     content?: SortOrder
+    name?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: messagesCountOrderByAggregateInput
     _max?: messagesMaxOrderByAggregateInput
@@ -8045,6 +8065,7 @@ export namespace Prisma {
     conversationId?: StringWithAggregatesFilter<"messages"> | string
     type?: StringWithAggregatesFilter<"messages"> | string
     content?: JsonWithAggregatesFilter<"messages">
+    name?: JsonNullableWithAggregatesFilter<"messages">
     createdAt?: DateTimeWithAggregatesFilter<"messages"> | Date | string
   }
 
@@ -8373,6 +8394,7 @@ export namespace Prisma {
     id?: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     sender: usersCreateNestedOneWithoutMessagesInput
     conversation: conversationsCreateNestedOneWithoutMessagesInput
@@ -8386,6 +8408,7 @@ export namespace Prisma {
     conversationId: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     conversationMembers?: conversationMembersUncheckedCreateNestedManyWithoutLastSeenMessageInput
     conversations?: conversationsUncheckedCreateNestedManyWithoutLastMessageInput
@@ -8395,6 +8418,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sender?: usersUpdateOneRequiredWithoutMessagesNestedInput
     conversation?: conversationsUpdateOneRequiredWithoutMessagesNestedInput
@@ -8408,6 +8432,7 @@ export namespace Prisma {
     conversationId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversationMembers?: conversationMembersUncheckedUpdateManyWithoutLastSeenMessageNestedInput
     conversations?: conversationsUncheckedUpdateManyWithoutLastMessageNestedInput
@@ -8419,6 +8444,7 @@ export namespace Prisma {
     conversationId: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -8426,6 +8452,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -8435,6 +8462,7 @@ export namespace Prisma {
     conversationId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -8785,6 +8813,29 @@ export namespace Prisma {
     gte?: InputJsonValue
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue
+    lte?: InputJsonValue
+    gt?: InputJsonValue
+    gte?: InputJsonValue
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type ConversationsListRelationFilter = {
     every?: conversationsWhereInput
@@ -8808,6 +8859,7 @@ export namespace Prisma {
     conversationId?: SortOrder
     type?: SortOrder
     content?: SortOrder
+    name?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -8851,6 +8903,32 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedJsonFilter<$PrismaModel>
     _max?: NestedJsonFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue
+    lte?: InputJsonValue
+    gt?: InputJsonValue
+    gte?: InputJsonValue
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type requestsCreateNestedManyWithoutSenderInput = {
@@ -9637,6 +9715,29 @@ export namespace Prisma {
     gte?: InputJsonValue
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue
+    lte?: InputJsonValue
+    gt?: InputJsonValue
+    gte?: InputJsonValue
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type requestsCreateWithoutSenderInput = {
     id?: string
@@ -9758,6 +9859,7 @@ export namespace Prisma {
     id?: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     conversation: conversationsCreateNestedOneWithoutMessagesInput
     conversationMembers?: conversationMembersCreateNestedManyWithoutLastSeenMessageInput
@@ -9769,6 +9871,7 @@ export namespace Prisma {
     conversationId: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     conversationMembers?: conversationMembersUncheckedCreateNestedManyWithoutLastSeenMessageInput
     conversations?: conversationsUncheckedCreateNestedManyWithoutLastMessageInput
@@ -9921,6 +10024,7 @@ export namespace Prisma {
     conversationId?: StringFilter<"messages"> | string
     type?: StringFilter<"messages"> | string
     content?: JsonFilter<"messages">
+    name?: JsonNullableFilter<"messages">
     createdAt?: DateTimeFilter<"messages"> | Date | string
   }
 
@@ -10352,6 +10456,7 @@ export namespace Prisma {
     id?: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     sender: usersCreateNestedOneWithoutMessagesInput
     conversationMembers?: conversationMembersCreateNestedManyWithoutLastSeenMessageInput
@@ -10363,6 +10468,7 @@ export namespace Prisma {
     senderId: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     conversationMembers?: conversationMembersUncheckedCreateNestedManyWithoutLastSeenMessageInput
     conversations?: conversationsUncheckedCreateNestedManyWithoutLastMessageInput
@@ -10382,6 +10488,7 @@ export namespace Prisma {
     id?: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     sender: usersCreateNestedOneWithoutMessagesInput
     conversation: conversationsCreateNestedOneWithoutMessagesInput
@@ -10394,6 +10501,7 @@ export namespace Prisma {
     conversationId: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     conversationMembers?: conversationMembersUncheckedCreateNestedManyWithoutLastSeenMessageInput
   }
@@ -10466,6 +10574,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sender?: usersUpdateOneRequiredWithoutMessagesNestedInput
     conversation?: conversationsUpdateOneRequiredWithoutMessagesNestedInput
@@ -10478,6 +10587,7 @@ export namespace Prisma {
     conversationId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversationMembers?: conversationMembersUncheckedUpdateManyWithoutLastSeenMessageNestedInput
   }
@@ -10548,6 +10658,7 @@ export namespace Prisma {
     id?: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     sender: usersCreateNestedOneWithoutMessagesInput
     conversation: conversationsCreateNestedOneWithoutMessagesInput
@@ -10560,6 +10671,7 @@ export namespace Prisma {
     conversationId: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     conversations?: conversationsUncheckedCreateNestedManyWithoutLastMessageInput
   }
@@ -10658,6 +10770,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sender?: usersUpdateOneRequiredWithoutMessagesNestedInput
     conversation?: conversationsUpdateOneRequiredWithoutMessagesNestedInput
@@ -10670,6 +10783,7 @@ export namespace Prisma {
     conversationId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversations?: conversationsUncheckedUpdateManyWithoutLastMessageNestedInput
   }
@@ -10945,6 +11059,7 @@ export namespace Prisma {
     conversationId: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -11051,6 +11166,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversation?: conversationsUpdateOneRequiredWithoutMessagesNestedInput
     conversationMembers?: conversationMembersUpdateManyWithoutLastSeenMessageNestedInput
@@ -11062,6 +11178,7 @@ export namespace Prisma {
     conversationId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversationMembers?: conversationMembersUncheckedUpdateManyWithoutLastSeenMessageNestedInput
     conversations?: conversationsUncheckedUpdateManyWithoutLastMessageNestedInput
@@ -11072,6 +11189,7 @@ export namespace Prisma {
     conversationId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -11094,6 +11212,7 @@ export namespace Prisma {
     senderId: string
     type: string
     content: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
   }
 
@@ -11143,6 +11262,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sender?: usersUpdateOneRequiredWithoutMessagesNestedInput
     conversationMembers?: conversationMembersUpdateManyWithoutLastSeenMessageNestedInput
@@ -11154,6 +11274,7 @@ export namespace Prisma {
     senderId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     conversationMembers?: conversationMembersUncheckedUpdateManyWithoutLastSeenMessageNestedInput
     conversations?: conversationsUncheckedUpdateManyWithoutLastMessageNestedInput
@@ -11164,6 +11285,7 @@ export namespace Prisma {
     senderId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     content?: JsonNullValueInput | InputJsonValue
+    name?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

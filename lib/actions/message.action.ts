@@ -8,10 +8,12 @@ export const createMessage = async ({
   conversationId,
   type,
   content,
+  name,
 }: {
   conversationId: string;
   type: string;
   content: string[];
+  name?: string[];
 }) => {
   try {
     const session = await auth();
@@ -45,6 +47,7 @@ export const createMessage = async ({
         conversationId: conversationId,
         type: type,
         content: content,
+        name: name,
       },
     });
 

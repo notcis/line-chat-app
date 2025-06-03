@@ -165,6 +165,7 @@ export default function Body({
               createAt={message.createdAt}
               seen={seenMessage}
               type={message.type}
+              name={message.name}
             />
           );
         }

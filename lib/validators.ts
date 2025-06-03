@@ -60,4 +60,5 @@ export const createGroupFormSchema = z.object({
 
 export const uploadFileSchema = z.object({
   files: z.string().array().min(1, "You must select at least 1 file"),
+  names: z.string().array().min(1, "You must select at least 1 file"),
 });

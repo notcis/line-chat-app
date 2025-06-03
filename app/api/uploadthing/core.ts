@@ -26,9 +26,6 @@ export const ourFileRouter = {
       console.log("Uploaded:", file.ufsUrl);
     }),
   file: f([
-    "image",
-    "video",
-    "audio",
     "pdf",
     "application/msword", // .doc
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
