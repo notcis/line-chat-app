@@ -25,7 +25,16 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ file }) => {
       console.log("Uploaded:", file.ufsUrl);
     }),
-  file: f(["image", "video", "audio", "pdf"])
+  file: f([
+    "image",
+    "video",
+    "audio",
+    "pdf",
+    "application/msword", // .doc
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+    "application/vnd.ms-excel", // .xls
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  ])
     .middleware(async () => await handleAuth())
     .onUploadComplete(async ({ file }) => {
       console.log("Uploaded:", file.ufsUrl);
