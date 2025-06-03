@@ -90,7 +90,7 @@ export default function CreateGroupDialog() {
     <Dialog>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button size="icon" variant="outline">
+          <Button size="icon" variant="outline" asChild>
             <DialogTrigger>
               <CirclePlusIcon />
             </DialogTrigger>
