@@ -146,9 +146,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { presignedUrl, ufsUrl } = data[0];
+    const { url, ufsUrl } = data[0];
 
-    await fetch(presignedUrl, {
+    await fetch(url, {
       method: "PUT",
       headers: {
         "Content-Type": "image/jpeg",
