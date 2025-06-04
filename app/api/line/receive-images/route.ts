@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
       throw new Error("You aren't a member of this conversation");
     }
 
-    const buffer = Buffer.from(await receive.buffer.arrayBuffer());
+    const newBuffer = Buffer.from(await receive.buffer.arrayBuffer());
     const filename = `${Date.now()}-${messageEventId}.jpg`;
 
     const presignRes = await fetch(
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
           files: [
             {
               name: filename,
-              size: buffer.length,
+              size: newBuffer.length,
               type: "image/jpeg",
               customId: null,
             },
