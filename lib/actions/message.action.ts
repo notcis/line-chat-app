@@ -74,17 +74,35 @@ export const createMessage = async ({
     });
 
     if (receiveUser?.user1.lineId) {
-      await fetch("https://api.line.me/v2/bot/message/push", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.CHANNEL_ACCESS_TOKEN}`,
-        },
-        body: JSON.stringify({
-          to: receiveUser?.user1.lineId,
-          messages: [{ type: type, text: content.at(0) }],
-        }),
-      });
+      if (type === "text") {
+        await fetch("https://api.line.me/v2/bot/message/push", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.CHANNEL_ACCESS_TOKEN}`,
+          },
+          body: JSON.stringify({
+            to: receiveUser?.user1.lineId,
+            messages: [{ type: type, text: content.at(0) }],
+          }),
+        });
+      } else if (type === "image") {
+        content.map(async (url) => {
+          await fetch("https://api.line.me/v2/bot/message/push", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${process.env.CHANNEL_ACCESS_TOKEN}`,
+            },
+            body: JSON.stringify({
+              to: receiveUser?.user1.lineId,
+              messages: [
+                { type: type, originalContentUrl: url, previewImageUrl: url },
+              ],
+            }),
+          });
+        });
+      }
     }
 
     return {

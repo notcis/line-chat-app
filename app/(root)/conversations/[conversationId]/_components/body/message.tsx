@@ -50,7 +50,9 @@ export default function Message({
           {type === "image" ? (
             <ImagePreview urls={content} names={name} />
           ) : null}
-          {type === "file" ? <FilePreview url={content[0]} /> : null}
+          {type === "file" ? (
+            <FilePreview url={content[0]} name={name?.[0]} />
+          ) : null}
           <p
             className={cn("text-xs flex w-full my-1", {
               "text-primary-foreground justify-end": formCurrentUser,
