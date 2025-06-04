@@ -146,6 +146,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    throw new Error(
+      `UploadThing response invalid: expected array with ${data}`
+    );
     const { url, ufsUrl } = data[0];
 
     await fetch(url, {
