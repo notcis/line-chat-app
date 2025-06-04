@@ -138,33 +138,40 @@ export async function POST(request: NextRequest) {
       const errText = await presignRes.text();
       throw new Error(`UploadThing presign failed: ${errText}`);
     }
-    const data = await presignRes.json();
 
-    if (!data) {
-      throw new Error(
-        `UploadThing response invalid: expected array with ${data}`
-      );
+    const presignData = await presignRes.json();
+    const uploadInfo = presignData.data?.[0];
+
+    if (!uploadInfo) {
+      throw new Error("UploadThing response invalid or missing data[0]");
     }
 
-    return NextResponse.json({
-      message: data,
-    });
-    const { url, ufsUrl } = data[0];
+    const form = new FormData();
+    for (const [key, value] of Object.entries(uploadInfo.fields)) {
+      form.append(key, String(value));
+    }
+    form.append(
+      "file",
+      new Blob([receive.buffer], { type: "image/jpeg" }),
+      filename
+    );
 
-    await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "image/jpeg",
-      },
-      body: receive.buffer,
+    const uploadRes = await fetch(uploadInfo.url, {
+      method: "POST",
+      body: form,
     });
+
+    if (!uploadRes.ok) {
+      const error = await uploadRes.text();
+      throw new Error("Upload to S3 failed: " + error);
+    }
 
     const message = await prisma.messages.create({
       data: {
         senderId: currentUserId,
         conversationId: conversationId as string,
         type: receive.messageType,
-        content: [ufsUrl],
+        content: [uploadInfo.ufsUrl],
       },
     });
 
