@@ -172,6 +172,7 @@ export async function POST(request: NextRequest) {
         conversationId: conversationId as string,
         type: receive.messageType,
         content: [uploadInfo.ufsUrl],
+        name: [uploadInfo.fileName],
       },
     });
 
