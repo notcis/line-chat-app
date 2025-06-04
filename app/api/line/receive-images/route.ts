@@ -123,15 +123,15 @@ export async function POST(request: NextRequest) {
       body: form,
     });
 
-    const uploaded = (await uploadRes.json())?.[0];
-    const ufsUrl = uploaded?.ufsUrl;
+    const uploaded = await uploadRes.json();
+    const url = uploaded.data?.at(0).url;
 
     const message = await prisma.messages.create({
       data: {
         senderId: currentUserId,
         conversationId: conversationId as string,
         type: receive.messageType,
-        content: [ufsUrl],
+        content: [url],
       },
     });
 
