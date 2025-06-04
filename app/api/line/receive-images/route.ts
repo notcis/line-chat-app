@@ -106,7 +106,6 @@ export async function POST(request: NextRequest) {
       throw new Error("You aren't a member of this conversation");
     }
 
-    const newBuffer = Buffer.from(await receive.buffer.arrayBuffer());
     const filename = `${Date.now()}-${messageEventId}.jpg`;
 
     const presignRes = await fetch(
@@ -121,7 +120,7 @@ export async function POST(request: NextRequest) {
           files: [
             {
               name: filename,
-              size: newBuffer.length,
+              size: receive.buffer.length,
               type: "image/jpeg",
               customId: null,
             },
@@ -140,7 +139,7 @@ export async function POST(request: NextRequest) {
       headers: {
         "Content-Type": "image/jpeg",
       },
-      body: buffer,
+      body: receive.buffer,
     });
 
     const message = await prisma.messages.create({
