@@ -131,8 +131,20 @@ export async function POST(request: NextRequest) {
         }),
       }
     );
-    const presignData = await presignRes.json();
-    const { presignedUrl, fileUrl } = presignData[0];
+
+    if (!presignRes.ok) {
+      const errText = await presignRes.text();
+      throw new Error(`UploadThing presign failed: ${errText}`);
+    }
+    const data = await presignRes.json();
+
+    if (!data || !Array.isArray(data) || !data[0]) {
+      throw new Error(
+        "UploadThing response invalid: expected array with item[0]"
+      );
+    }
+
+    const { presignedUrl, fileUrl } = data[0];
 
     await fetch(presignedUrl, {
       method: "PUT",
