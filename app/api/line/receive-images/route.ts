@@ -106,32 +106,49 @@ export async function POST(request: NextRequest) {
       throw new Error("You aren't a member of this conversation");
     }
 
-    const form = new FormData();
-    form.append(
-      "file",
-      new Blob([receive.buffer]),
-      `${Date.now()}-${receive.messageEventId}.jpg`
+    const buffer = Buffer.from(await receive.buffer.arrayBuffer());
+    const filename = `${Date.now()}-${messageEventId}.jpg`;
+
+    const presignRes = await fetch(
+      "https://api.uploadthing.com/v6/uploadFiles",
+      {
+        method: "POST",
+        headers: {
+          "X-Uploadthing-Api-Key": process.env.UPLOADTHING_SECRET!,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          files: [
+            {
+              name: filename,
+              size: buffer.length,
+              type: "image/jpeg",
+              customId: null,
+            },
+          ],
+          acl: "public-read",
+          metadata: null,
+          contentDisposition: "inline",
+        }),
+      }
     );
+    const presignData = await presignRes.json();
+    const { presignedUrl, fileUrl } = presignData[0];
 
-    const uploadRes = await fetch("https://uploadthing.com/api/uploadFiles", {
-      method: "POST",
+    await fetch(presignedUrl, {
+      method: "PUT",
       headers: {
-        "x-uploadthing-api-key": process.env.UPLOADTHING_SECRET!,
-        "x-uploadthing-api-version": "v1",
-        "x-uploadthing-upload-type": "image",
+        "Content-Type": "image/jpeg",
       },
-      body: form,
+      body: buffer,
     });
-
-    const uploaded = await uploadRes.json();
-    const url = uploaded.data?.at(0).url;
 
     const message = await prisma.messages.create({
       data: {
         senderId: currentUserId,
         conversationId: conversationId as string,
         type: receive.messageType,
-        content: [url],
+        content: [fileUrl],
       },
     });
 
