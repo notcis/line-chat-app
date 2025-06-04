@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
     if (!data || !Array.isArray(data) || !data[0]) {
       throw new Error(
         "UploadThing response invalid: expected array with item[0]",
-        data
+        data ? data : "null"
       );
     }
 
