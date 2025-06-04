@@ -14,12 +14,14 @@ export async function POST(request: NextRequest) {
     messageType,
   } = await request.json();
 
+  const newBuffer = Buffer.from(buffer, "base64");
+
   try {
     const receive = receiveLineImageApiSchema.parse({
       lineId,
       imageUrl: pictureUrl,
       username: displayName,
-      buffer,
+      buffer: newBuffer,
       messageEventId,
       messageType,
     });
