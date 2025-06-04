@@ -140,14 +140,13 @@ export async function POST(request: NextRequest) {
     }
     const data = await presignRes.json();
 
-    if (!data || !Array.isArray(data) || !data[0]) {
+    if (!data) {
       throw new Error(
-        "UploadThing response invalid: expected array with item[0]",
-        data ? data : "null"
+        `UploadThing response invalid: expected array with ${data}`
       );
     }
 
-    const { presignedUrl, fileUrl } = data[0];
+    const { presignedUrl, ufsUrl } = data[0];
 
     await fetch(presignedUrl, {
       method: "PUT",
