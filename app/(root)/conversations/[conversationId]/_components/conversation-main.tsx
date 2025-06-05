@@ -21,7 +21,6 @@ export default function ConversationMain({
   const [removeFriendDialogOpen, setRemoveFriendDialogOpen] = useState(false);
   const [deleteGroupDialogOpen, setDeleteGroupDialogOpen] = useState(false);
   const [leaveGroupDialogOpen, setLeaveGroupDialogOpen] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [callType, setCallType] = useState<"audio" | "video" | null>(null);
 
   const { data: conversation } = useQuery({
@@ -87,6 +86,7 @@ export default function ConversationMain({
                 },
               ]
         }
+        setCallType={setCallType}
       />
       <Body
         members={
@@ -109,6 +109,8 @@ export default function ConversationMain({
               ]
             : []
         }
+        callType={callType}
+        setCallType={setCallType}
       />
       <ChatInput />
     </ConversationContainer>

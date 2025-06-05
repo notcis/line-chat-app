@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn, formatTime } from "@/lib/utils";
 import ImagePreview from "./image-preview";
 import FilePreview from "./file-preview";
+import { Badge } from "@/components/ui/badge";
 
 type Props = {
   formCurrentUser: boolean;
@@ -52,6 +53,9 @@ export default function Message({
           ) : null}
           {type === "file" ? (
             <FilePreview url={content[0]} name={name?.[0]} />
+          ) : null}
+          {type === "call" ? (
+            <Badge variant="secondary">Joined Call</Badge>
           ) : null}
           <p
             className={cn("text-xs flex w-full my-1", {

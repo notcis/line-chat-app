@@ -6,16 +6,19 @@ import { useConversation } from "@/hooks/useConversation";
 import { getMessages } from "@/lib/actions/message.action";
 import { CONVERSATION, LIST_CONVERSATIONS, MESSAGES } from "@/lib/constants";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import CallRoom from "./call-room";
 
 export default function Body({
   members,
+  callType,
+  setCallType,
 }: {
   members: {
     lastSeenMessageId?: string;
@@ -23,6 +26,8 @@ export default function Body({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   }[];
+  callType: "audio" | "video" | null;
+  setCallType: Dispatch<SetStateAction<"audio" | "video" | null>>;
 }) {
   const queryClient = useQueryClient();
   const { conversationId } = useConversation();
@@ -127,48 +132,56 @@ export default function Body({
 
   return (
     <div className=" flex-1 w-full flex overflow-y-scroll flex-col-reverse gap-2 p3 no-scrollbar">
-      {messages?.map(
-        (
-          {
-            message,
-            senderImage,
-            senderName,
-            isCurrentUser,
-          }: {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            message: any;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            senderImage: any;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            senderName: any;
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            isCurrentUser: any;
-          },
-          index: number
-        ) => {
-          const lastByUser =
-            messages[index - 1]?.message.senderId ===
-            messages[index]?.message.senderId;
+      {!callType ? (
+        messages?.map(
+          (
+            {
+              message,
+              senderImage,
+              senderName,
+              isCurrentUser,
+            }: {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              message: any;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              senderImage: any;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              senderName: any;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              isCurrentUser: any;
+            },
+            index: number
+          ) => {
+            const lastByUser =
+              messages[index - 1]?.message.senderId ===
+              messages[index]?.message.senderId;
 
-          const seenMessage = isCurrentUser
-            ? getSeenMessage(message.id)
-            : undefined;
+            const seenMessage = isCurrentUser
+              ? getSeenMessage(message.id)
+              : undefined;
 
-          return (
-            <Message
-              key={message.id}
-              formCurrentUser={isCurrentUser}
-              senderImage={senderImage}
-              senderName={senderName}
-              lastByUser={lastByUser}
-              content={message.content}
-              createAt={message.createdAt}
-              seen={seenMessage}
-              type={message.type}
-              name={message.name}
-            />
-          );
-        }
+            return (
+              <Message
+                key={message.id}
+                formCurrentUser={isCurrentUser}
+                senderImage={senderImage}
+                senderName={senderName}
+                lastByUser={lastByUser}
+                content={message.content}
+                createAt={message.createdAt}
+                seen={seenMessage}
+                type={message.type}
+                name={message.name}
+              />
+            );
+          }
+        )
+      ) : (
+        <CallRoom
+          audio={callType === "audio" || callType === "video"}
+          video={callType === "video"}
+          handleDisconnect={() => setCallType(null)}
+        />
       )}
     </div>
   );

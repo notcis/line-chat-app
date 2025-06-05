@@ -8,13 +8,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { CircleArrowLeftIcon, SettingsIcon } from "lucide-react";
+import {
+  CircleArrowLeftIcon,
+  PhoneIcon,
+  SettingsIcon,
+  VideoIcon,
+} from "lucide-react";
 import Link from "next/link";
+import { Dispatch, SetStateAction } from "react";
 
 export default function Header({
   imageUrl,
   name,
   options,
+  setCallType,
 }: {
   imageUrl?: string;
   name: string;
@@ -23,6 +30,7 @@ export default function Header({
     destructive: boolean;
     onClick: () => void;
   }[];
+  setCallType: Dispatch<SetStateAction<"audio" | "video" | null>>;
 }) {
   return (
     <Card className="w-full flex flex-row items-center rounded-lg p-2 justify-between">
@@ -37,6 +45,20 @@ export default function Header({
         <h2 className=" font-semibold">{name}</h2>
       </div>
       <div className="flex gap-2">
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={() => setCallType("audio")}
+        >
+          <PhoneIcon />
+        </Button>
+        <Button
+          variant="secondary"
+          size="icon"
+          onClick={() => setCallType("video")}
+        >
+          <VideoIcon />
+        </Button>
         {options ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
