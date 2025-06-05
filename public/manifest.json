@@ -1,0 +1,21 @@
+{
+  "name": "Line Chat App",
+  "short_name": "Chat Coop",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#3595f6",
+  "theme_color": "#3595f6",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

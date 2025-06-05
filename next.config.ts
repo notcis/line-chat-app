@@ -1,7 +1,14 @@
+import withPWA from "./lib/next-pwa-wrapper.cjs";
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  compiler: {
+    removeConsole: process.env.NODE_ENV !== "development",
+  },
+  reactStrictMode: true,
+  swcMinify: true,
 
   images: {
     remotePatterns: [
@@ -34,4 +41,11 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+const PWAWrapper = withPWA({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  register: true,
+  skipWaiting: true,
+});
+
+export default PWAWrapper(nextConfig);
