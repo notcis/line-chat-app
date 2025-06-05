@@ -42,7 +42,7 @@ export default function ImagePreview({
                   <div className="aspect-w-16 aspect-h-9 h-full">
                     <video
                       poster={url}
-                      className=" object-cover w-full h-full rounded-md"
+                      className="object-cover w-full h-full rounded-md"
                     >
                       <source src={`${url}$t=0.1`} type="video/mp4" />
                     </video>
@@ -52,9 +52,9 @@ export default function ImagePreview({
                     src={url}
                     alt={`Uploaded inage`}
                     referrerPolicy="no-referrer"
-                    className=" rounded-md"
-                    layout="fill"
-                    objectFit="cover"
+                    fill
+                    className="object-cover rounded-md"
+                    sizes="(max-width: 768px) 100vw, 600px"
                   />
                 )}
               </DialogTrigger>
@@ -74,8 +74,8 @@ export default function ImagePreview({
                       src={url}
                       alt={`Uploaded image`}
                       referrerPolicy="no-referrer"
-                      layout="fill"
-                      objectFit="cover"
+                      fill
+                      className="object-contain"
                     />
                   )}
                 </div>
