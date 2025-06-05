@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
         hostname: "vxh2fakagf.ufs.sh",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "stickershop.line-scdn.net",
+        port: "",
+      },
     ],
   },
 
