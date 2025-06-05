@@ -1,4 +1,4 @@
-export const APP_NAME = "CHAT COOPMSDS";
+export const APP_NAME = "Chat Coop App";
 export const APP_DESC = "ระบบสนทนาสหกรณ์ออมทรัพย์ฯ พม.";
 
 export const LIST_FRIEND_REQUEST = "list-friend-request";
