@@ -66,11 +66,8 @@ export default function CallRoom({
         const data = await res.json();
         setToken(data.token);
         console.log(data);
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         console.log(error);
-
         toast.error("Cound not join the call");
       }
     })();
