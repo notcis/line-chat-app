@@ -1,6 +1,6 @@
 import { ADMIN_ID } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
-import { formatError } from "@/lib/utils";
+import { formatError, getMimeType } from "@/lib/utils";
 import { receiveLineImageApiSchema } from "@/lib/validators";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
       throw new Error("You aren't a member of this conversation");
     }
 
-    const filename = `${Date.now()}-${receive.messageEventId}.jpg`;
+    const filename = receive.messageEventId;
 
     const presignRes = await fetch(
       "https://api.uploadthing.com/v6/uploadFiles",
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
             {
               name: filename,
               size: receive.buffer.length,
-              type: "image/jpeg",
+              type: getMimeType(filename),
               customId: null,
             },
           ],
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
     }
     form.append(
       "file",
-      new Blob([receive.buffer], { type: "image/jpeg" }),
+      new Blob([receive.buffer], { type: getMimeType(filename) }),
       filename
     );
 
