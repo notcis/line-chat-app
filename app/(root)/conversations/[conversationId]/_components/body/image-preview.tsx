@@ -64,7 +64,7 @@ export default function ImagePreview({
                     {isVideo ? "Video Preview" : "Image Preview"}
                   </DialogTitle>
                 </DialogHeader>
-                <div className=" w-full h-96 relative flex items-center justify-center">
+                <div className="w-full h-96 relative flex items-center justify-center">
                   {isVideo ? (
                     <video controls poster={url} className="w-full">
                       <source src={`${url}$t=0.1`} type="video/mp4" />
@@ -72,7 +72,7 @@ export default function ImagePreview({
                   ) : (
                     <Image
                       src={url}
-                      alt={`Uploaded inage`}
+                      alt={`Uploaded image`}
                       referrerPolicy="no-referrer"
                       layout="fill"
                       objectFit="cover"

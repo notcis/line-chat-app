@@ -64,6 +64,17 @@ export const receiveLineImageApiSchema = z.object({
   }),
 });
 
+export const receiveLineStickerApiSchema = z.object({
+  lineId: z.string().min(1, "lineId require"),
+  username: z.string().min(1, "displayName require"),
+  imageUrl: z.string().min(1, "pictureUrl require"),
+  stickerId: z.string().min(1, "stickerId require"),
+  packageId: z.string().min(1, "messageEventId require"),
+  messageType: z.string().refine((type) => LINE_MESSAGE_TYPE.includes(type), {
+    message: "Invalid message type",
+  }),
+});
+
 export const createGroupFormSchema = z.object({
   name: z.string().min(1, "Name can't be empty"),
   members: z.string().array().min(1, "You must select at least 1 friend"),
