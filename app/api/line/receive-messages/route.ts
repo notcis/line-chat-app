@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { formatError } from "@/lib/utils";
 import { receiveLineMessageApiSchema } from "@/lib/validators";
 import { NextRequest, NextResponse } from "next/server";
+import { toZonedTime } from "date-fns-tz";
+import { differenceInMinutes } from "date-fns";
 
 export async function POST(request: NextRequest) {
   const { lineId, displayName, pictureUrl, userMessage, messageType } =
@@ -55,8 +57,11 @@ export async function POST(request: NextRequest) {
       answer = ADMIN_ID;
     } else {
       // ถ้ากดเลือก  ให้ check SessionExpired มี เวลา 10 นาที หลังจากกด
+
+      const timeZone = "Asia/Bangkok";
+      const updatedAtInBangkok = toZonedTime(currentUser.updatedAt, timeZone);
       const isSessionExpired =
-        Date.now() - new Date(currentUser.updatedAt).getTime() > 10 * 60 * 1000;
+        differenceInMinutes(new Date(), updatedAtInBangkok) > 10;
 
       // ถ้ายังไม่หมดอายุ ให้เลือก admin แต่ละฝ่าย
       if (!isSessionExpired) {
