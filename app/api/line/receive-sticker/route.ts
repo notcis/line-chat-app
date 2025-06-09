@@ -1,7 +1,8 @@
 import { ADMIN_ID } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
-import { formatError } from "@/lib/utils";
+import { checkContactDep, formatError } from "@/lib/utils";
 import { receiveLineStickerApiSchema } from "@/lib/validators";
+import { differenceInMinutes } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -18,25 +19,70 @@ export async function POST(request: NextRequest) {
       messageType,
     });
 
+    // หา user จาก line
     const lineUser = await prisma.users.findFirst({
       where: {
         lineId: lineId,
       },
     });
 
+    let currentUser;
+
+    // check ว่ามี user line ไหม  ถ้าไม่มี ให้สร้าง user ถ้ามีให้ update ข้อมูล
+    if (!lineUser) {
+      currentUser = await prisma.users.create({
+        data: {
+          lineId: receive.lineId,
+          username: receive.username,
+          imageUrl: receive.imageUrl,
+        },
+      });
+    } else {
+      currentUser = await prisma.users.update({
+        where: {
+          id: lineUser.id,
+        },
+        data: {
+          username: receive.username,
+          imageUrl: receive.imageUrl,
+        },
+      });
+    }
+
+    let answer;
+
+    // check user กดเลือก คุยกับฝ่ายไหน ถ้าไม่ได้กด ให้คุยกับ admin หลัก
+    if (!currentUser.contactDepartment) {
+      answer = ADMIN_ID;
+    } else {
+      // ถ้ากดเลือก  ให้ check SessionExpired มี เวลา 10 นาที หลังจากกด
+
+      const isSessionExpired =
+        differenceInMinutes(new Date(), new Date(currentUser.updatedAt!)) > 10;
+
+      // ถ้ายังไม่หมดอายุ ให้เลือก admin แต่ละฝ่าย
+      if (!isSessionExpired) {
+        answer = checkContactDep(currentUser.contactDepartment);
+      } else {
+        // ถ้าหมดอายุให้เลือก admin หลัก
+        answer = ADMIN_ID;
+      }
+    }
+
+    // check friend
+
+    const friend = await prisma.friends.findFirst({
+      where: {
+        user1Id: currentUser.id,
+        user2Id: answer,
+      },
+    });
+
     let conversationId;
-    let currentUserId;
 
-    if (!lineUser?.lineId && !lineUser) {
+    // ถ้ายังไม่เป็น freind ให้ สร้าง conversation id
+    if (!friend) {
       const resData = await prisma.$transaction(async (tx) => {
-        const currentUser = await tx.users.create({
-          data: {
-            lineId: receive.lineId,
-            username: receive.username,
-            imageUrl: receive.imageUrl,
-          },
-        });
-
         const conversation = await tx.conversations.create({
           data: {
             isGroup: false,
@@ -46,7 +92,7 @@ export async function POST(request: NextRequest) {
         await tx.friends.create({
           data: {
             user1Id: currentUser.id,
-            user2Id: ADMIN_ID,
+            user2Id: answer,
             conversationId: conversation.id,
           },
         });
@@ -59,39 +105,27 @@ export async function POST(request: NextRequest) {
 
         await tx.conversationMembers.create({
           data: {
-            memberId: ADMIN_ID,
+            memberId: answer,
             conversationId: conversation.id,
           },
         });
 
         return {
           conversationId: conversation.id,
-          currentUserId: currentUser.id,
         };
       });
 
-      currentUserId = resData.currentUserId;
       conversationId = resData.conversationId;
     } else {
-      currentUserId = lineUser.id;
-      const conversation = await prisma.friends.findFirst({
-        where: {
-          user1Id: currentUserId,
-        },
-        select: { conversationId: true },
-      });
-
-      conversationId = conversation?.conversationId;
+      // ถ้ามีแล้ว ให้ get ค่า conversation id จาก friend
+      conversationId = friend.conversationId;
     }
-
-    if (!conversationId && !currentUserId)
-      throw new Error("can not find conversation");
 
     const membership = await prisma.conversationMembers.findUnique({
       where: {
         by_memberId_conversationId: {
-          memberId: currentUserId,
-          conversationId: conversationId as string,
+          memberId: currentUser.id,
+          conversationId: conversationId,
         },
       },
     });
@@ -104,8 +138,8 @@ export async function POST(request: NextRequest) {
 
     const message = await prisma.messages.create({
       data: {
-        senderId: currentUserId,
-        conversationId: conversationId as string,
+        senderId: currentUser.id,
+        conversationId: conversationId,
         type: receive.messageType,
         content: [stickerUrl],
         name: [receive.packageId],
@@ -114,7 +148,7 @@ export async function POST(request: NextRequest) {
 
     await prisma.conversations.update({
       where: {
-        id: conversationId as string,
+        id: conversationId,
       },
       data: {
         lastMessageId: message.id,
