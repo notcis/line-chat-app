@@ -17,17 +17,25 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (!user) throw new Error("no line user");
-
-    await prisma.users.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        contactDepartment: received.department,
-        updatedAt: new Date(),
-      },
-    });
+    if (!user) {
+      await prisma.users.create({
+        data: {
+          lineId: received.lineId,
+          contactDepartment: received.department,
+          updatedAt: new Date(),
+        },
+      });
+    } else {
+      await prisma.users.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          contactDepartment: received.department,
+          updatedAt: new Date(),
+        },
+      });
+    }
 
     return NextResponse.json({
       message: "success",
