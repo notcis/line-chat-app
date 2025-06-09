@@ -11,9 +11,9 @@ export async function POST(request: NextRequest) {
       department: department,
     });
 
-    const user = await prisma.users.findUnique({
+    const user = await prisma.users.findFirst({
       where: {
-        id: recive.lineId,
+        lineId: recive.lineId,
       },
     });
 
