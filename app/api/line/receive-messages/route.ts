@@ -60,11 +60,11 @@ export async function POST(request: NextRequest) {
 
       checkDate = differenceInMinutes(
         new Date(),
-        new Date(currentUser.updatedAt)
+        new Date(currentUser.updatedAt!)
       );
 
       const isSessionExpired =
-        differenceInMinutes(new Date(), new Date(currentUser.updatedAt)) > 10;
+        differenceInMinutes(new Date(), new Date(currentUser.updatedAt!)) > 10;
 
       // ถ้ายังไม่หมดอายุ ให้เลือก admin แต่ละฝ่าย
       if (!isSessionExpired) {
