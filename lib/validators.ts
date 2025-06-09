@@ -84,3 +84,8 @@ export const uploadFileSchema = z.object({
   files: z.string().array().min(1, "You must select at least 1 file"),
   names: z.string().array().min(1, "You must select at least 1 file"),
 });
+
+export const createContactDepartmentSchema = z.object({
+  lineId: z.string().min(1, "lineId require"),
+  department: z.string().min(1, "department require"),
+});

@@ -15,14 +15,15 @@ datasource db {
 }
 
 model users {
-  id        String   @id @default(uuid())
-  imageUrl  String?
-  username  String?
-  password  String?
-  lineId    String?
-  email     String?
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @default(now()) @db.Timestamp(6)
+  id                String   @id @default(uuid())
+  imageUrl          String?
+  username          String?
+  password          String?
+  lineId            String?
+  email             String?
+  contactDepartment String?
+  createdAt         DateTime @default(now()) @db.Timestamp(6)
+  updatedAt         DateTime @updatedAt
 
   sent                requests[]            @relation("SentRequests")
   received            requests[]            @relation("ReceivedRequests")

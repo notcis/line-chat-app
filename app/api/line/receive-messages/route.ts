@@ -1,4 +1,4 @@
-import { ADMIN_ID } from "@/lib/constants";
+import { ADMIN_ID, COM_ID, CREDIT_ID } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import { formatError } from "@/lib/utils";
 import { receiveLineMessageApiSchema } from "@/lib/validators";
@@ -42,10 +42,35 @@ export async function POST(request: NextRequest) {
           },
         });
 
+        let answer;
+
+        if (currentUser.contactDepartment) {
+          const isSessionExpired =
+            Date.now() - new Date(currentUser.updatedAt).getTime() >
+            10 * 60 * 1000;
+
+          if (isSessionExpired) {
+            answer = ADMIN_ID;
+          } else {
+            switch (currentUser.contactDepartment) {
+              case "contact=credit":
+                answer = CREDIT_ID;
+                break;
+              case "contact=com":
+                answer = COM_ID;
+                break;
+              default:
+                answer = ADMIN_ID;
+            }
+          }
+        } else {
+          answer = ADMIN_ID;
+        }
+
         await tx.friends.create({
           data: {
             user1Id: currentUser.id,
-            user2Id: ADMIN_ID,
+            user2Id: answer,
             conversationId: conversation.id,
           },
         });
@@ -58,7 +83,7 @@ export async function POST(request: NextRequest) {
 
         await tx.conversationMembers.create({
           data: {
-            memberId: ADMIN_ID,
+            memberId: answer,
             conversationId: conversation.id,
           },
         });
