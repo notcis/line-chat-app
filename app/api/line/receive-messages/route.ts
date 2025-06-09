@@ -51,6 +51,7 @@ export async function POST(request: NextRequest) {
     }
 
     let answer;
+    let checkDate;
 
     // check user กดเลือก คุยกับฝ่ายไหน ถ้าไม่ได้กด ให้คุยกับ admin หลัก
     if (!currentUser.contactDepartment) {
@@ -62,6 +63,8 @@ export async function POST(request: NextRequest) {
       const updatedAtInBangkok = toZonedTime(currentUser.updatedAt, timeZone);
       const isSessionExpired =
         differenceInMinutes(new Date(), updatedAtInBangkok) > 10;
+
+      checkDate = updatedAtInBangkok;
 
       // ถ้ายังไม่หมดอายุ ให้เลือก admin แต่ละฝ่าย
       if (!isSessionExpired) {
@@ -157,6 +160,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: "success",
+      data: checkDate,
     });
   } catch (error) {
     return NextResponse.json({
