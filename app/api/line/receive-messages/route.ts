@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
     await request.json();
 
   try {
+    // check params
     const receive = receiveLineMessageApiSchema.parse({
       lineId,
       imageUrl: pictureUrl,
@@ -17,6 +18,7 @@ export async function POST(request: NextRequest) {
       messageType,
     });
 
+    // หา user จาก line
     const lineUser = await prisma.users.findFirst({
       where: {
         lineId: lineId,
@@ -25,6 +27,7 @@ export async function POST(request: NextRequest) {
 
     let currentUser;
 
+    // check ว่ามี user line ไหม  ถ้าไม่มี ให้สร้าง user ถ้ามีให้ update ข้อมูล
     if (!lineUser) {
       currentUser = await prisma.users.create({
         data: {
@@ -47,12 +50,15 @@ export async function POST(request: NextRequest) {
 
     let answer;
 
+    // check user กดเลือก คุยกับฝ่ายไหน ถ้าไม่ได้กด ให้คุยกับ admin หลัก
     if (!currentUser.contactDepartment) {
       answer = ADMIN_ID;
     } else {
+      // ถ้ากดเลือก  ให้ check SessionExpired มี เวลา 10 นาที หลังจากกด
       const isSessionExpired =
         Date.now() - new Date(currentUser.updatedAt).getTime() > 10 * 60 * 1000;
 
+      // ถ้ายังไม่หมดอายุ ให้เลือก admin แต่ละฝ่าย
       if (!isSessionExpired) {
         switch (currentUser.contactDepartment) {
           case "contact=credit":
@@ -65,6 +71,7 @@ export async function POST(request: NextRequest) {
             answer = ADMIN_ID;
         }
       } else {
+        // ถ้าหมดอายุให้เลือก admin หลัก
         answer = ADMIN_ID;
       }
     }
@@ -80,6 +87,7 @@ export async function POST(request: NextRequest) {
 
     let conversationId;
 
+    // ถ้ายังไม่เป็น freind ให้ สร้าง conversation id
     if (!friend) {
       const resData = await prisma.$transaction(async (tx) => {
         const conversation = await tx.conversations.create({
@@ -116,6 +124,7 @@ export async function POST(request: NextRequest) {
 
       conversationId = resData.conversationId;
     } else {
+      // ถ้ามีแล้ว ให้ get ค่า conversation id จาก friend
       conversationId = friend.conversationId;
     }
 
