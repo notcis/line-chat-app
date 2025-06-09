@@ -1,6 +1,6 @@
-import { ADMIN_ID, COM_ID, CREDIT_ID } from "@/lib/constants";
+import { ADMIN_ID } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
-import { formatError } from "@/lib/utils";
+import { checkContactDep, formatError } from "@/lib/utils";
 import { receiveLineMessageApiSchema } from "@/lib/validators";
 import { NextRequest, NextResponse } from "next/server";
 import { toZonedTime } from "date-fns-tz";
@@ -65,16 +65,7 @@ export async function POST(request: NextRequest) {
 
       // ถ้ายังไม่หมดอายุ ให้เลือก admin แต่ละฝ่าย
       if (!isSessionExpired) {
-        switch (currentUser.contactDepartment) {
-          case "contact=credit":
-            answer = CREDIT_ID;
-            break;
-          case "contact=com":
-            answer = COM_ID;
-            break;
-          default:
-            answer = ADMIN_ID;
-        }
+        answer = checkContactDep(currentUser.contactDepartment);
       } else {
         // ถ้าหมดอายุให้เลือก admin หลัก
         answer = ADMIN_ID;

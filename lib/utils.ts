@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { th } from "date-fns/locale";
 import { format } from "date-fns";
+import { ADMIN_ID, COM_ID, CREDIT_ID } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -48,5 +49,18 @@ export function getMimeType(filename: string): string {
       return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     default:
       return "application/octet-stream";
+  }
+}
+
+export function checkContactDep(contactDepartment: string) {
+  switch (contactDepartment) {
+    case "contact=credit":
+      return CREDIT_ID;
+
+    case "contact=com":
+      return COM_ID;
+
+    default:
+      return ADMIN_ID;
   }
 }
