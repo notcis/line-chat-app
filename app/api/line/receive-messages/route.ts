@@ -23,49 +23,70 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    let currentUser;
+
+    if (!lineUser) {
+      currentUser = await prisma.users.create({
+        data: {
+          lineId: receive.lineId,
+          username: receive.username,
+          imageUrl: receive.imageUrl,
+        },
+      });
+    } else {
+      currentUser = await prisma.users.update({
+        where: {
+          id: lineUser.id,
+        },
+        data: {
+          username: receive.username,
+          imageUrl: receive.imageUrl,
+        },
+      });
+    }
+
+    let answer;
+
+    if (!currentUser.contactDepartment) {
+      answer = ADMIN_ID;
+    } else {
+      const isSessionExpired =
+        Date.now() - new Date(currentUser.updatedAt).getTime() > 10 * 60 * 1000;
+
+      if (!isSessionExpired) {
+        switch (currentUser.contactDepartment) {
+          case "contact=credit":
+            answer = CREDIT_ID;
+            break;
+          case "contact=com":
+            answer = COM_ID;
+            break;
+          default:
+            answer = ADMIN_ID;
+        }
+      } else {
+        answer = ADMIN_ID;
+      }
+    }
+
+    // check friend
+
+    const friend = await prisma.friends.findFirst({
+      where: {
+        user1Id: currentUser.id,
+        user2Id: answer,
+      },
+    });
+
     let conversationId;
-    let currentUserId;
 
-    if (!lineUser?.lineId && !lineUser) {
+    if (!friend) {
       const resData = await prisma.$transaction(async (tx) => {
-        const currentUser = await tx.users.create({
-          data: {
-            lineId: receive.lineId,
-            username: receive.username,
-            imageUrl: receive.imageUrl,
-          },
-        });
-
         const conversation = await tx.conversations.create({
           data: {
             isGroup: false,
           },
         });
-
-        let answer;
-
-        if (currentUser.contactDepartment) {
-          const isSessionExpired =
-            Date.now() - new Date(currentUser.updatedAt).getTime() >
-            10 * 60 * 1000;
-
-          if (isSessionExpired) {
-            answer = ADMIN_ID;
-          } else {
-            switch (currentUser.contactDepartment) {
-              case "contact=credit":
-                answer = CREDIT_ID;
-                break;
-              case "contact=com":
-                answer = COM_ID;
-                break;
-              default:
-                answer = ADMIN_ID;
-            }
-          }
-        } else {
-          answer = ADMIN_ID;
-        }
 
         await tx.friends.create({
           data: {
@@ -90,32 +111,19 @@ export async function POST(request: NextRequest) {
 
         return {
           conversationId: conversation.id,
-          currentUserId: currentUser.id,
         };
       });
 
-      currentUserId = resData.currentUserId;
       conversationId = resData.conversationId;
     } else {
-      currentUserId = lineUser.id;
-      const conversation = await prisma.friends.findFirst({
-        where: {
-          user1Id: currentUserId,
-        },
-        select: { conversationId: true },
-      });
-
-      conversationId = conversation?.conversationId;
+      conversationId = friend.conversationId;
     }
-
-    if (!conversationId && !currentUserId)
-      throw new Error("can not find conversation");
 
     const membership = await prisma.conversationMembers.findUnique({
       where: {
         by_memberId_conversationId: {
-          memberId: currentUserId,
-          conversationId: conversationId as string,
+          memberId: currentUser.id,
+          conversationId: conversationId,
         },
       },
     });
@@ -126,7 +134,7 @@ export async function POST(request: NextRequest) {
 
     const message = await prisma.messages.create({
       data: {
-        senderId: currentUserId,
+        senderId: currentUser.id,
         conversationId: conversationId as string,
         type: receive.messageType,
         content: [receive.userMessage],
@@ -135,7 +143,7 @@ export async function POST(request: NextRequest) {
 
     await prisma.conversations.update({
       where: {
-        id: conversationId as string,
+        id: conversationId,
       },
       data: {
         lastMessageId: message.id,

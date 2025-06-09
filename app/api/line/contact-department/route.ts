@@ -6,14 +6,14 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     const { lineId, department } = await request.json();
-    const recive = createContactDepartmentSchema.parse({
+    const received = createContactDepartmentSchema.parse({
       lineId: lineId,
       department: department,
     });
 
     const user = await prisma.users.findFirst({
       where: {
-        lineId: recive.lineId,
+        lineId: received.lineId,
       },
     });
 
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         id: user.id,
       },
       data: {
-        contactDepartment: recive.department,
+        contactDepartment: received.department,
         updatedAt: new Date(),
       },
     });
