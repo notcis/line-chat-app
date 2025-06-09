@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { checkContactDep, formatError } from "@/lib/utils";
 import { receiveLineMessageApiSchema } from "@/lib/validators";
 import { NextRequest, NextResponse } from "next/server";
-import { toZonedTime } from "date-fns-tz";
 import { differenceInMinutes } from "date-fns";
 
 export async function POST(request: NextRequest) {
@@ -51,7 +50,6 @@ export async function POST(request: NextRequest) {
     }
 
     let answer;
-    let checkDate;
 
     // check user กดเลือก คุยกับฝ่ายไหน ถ้าไม่ได้กด ให้คุยกับ admin หลัก
     if (!currentUser.contactDepartment) {
@@ -59,12 +57,8 @@ export async function POST(request: NextRequest) {
     } else {
       // ถ้ากดเลือก  ให้ check SessionExpired มี เวลา 10 นาที หลังจากกด
 
-      const timeZone = "Asia/Bangkok";
-      const updatedAtInBangkok = toZonedTime(currentUser.updatedAt, timeZone);
       const isSessionExpired =
-        differenceInMinutes(new Date(), updatedAtInBangkok) > 10;
-
-      checkDate = updatedAtInBangkok;
+        differenceInMinutes(new Date(), new Date(currentUser.updatedAt)) > 10;
 
       // ถ้ายังไม่หมดอายุ ให้เลือก admin แต่ละฝ่าย
       if (!isSessionExpired) {
@@ -160,7 +154,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: "success",
-      data: checkDate,
     });
   } catch (error) {
     return NextResponse.json({
