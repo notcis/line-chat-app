@@ -50,12 +50,18 @@ export async function POST(request: NextRequest) {
     }
 
     let answer;
+    let checkDate;
 
     // check user กดเลือก คุยกับฝ่ายไหน ถ้าไม่ได้กด ให้คุยกับ admin หลัก
     if (!currentUser.contactDepartment) {
       answer = ADMIN_ID;
     } else {
       // ถ้ากดเลือก  ให้ check SessionExpired มี เวลา 10 นาที หลังจากกด
+
+      checkDate = differenceInMinutes(
+        new Date(),
+        new Date(currentUser.updatedAt)
+      );
 
       const isSessionExpired =
         differenceInMinutes(new Date(), new Date(currentUser.updatedAt)) > 10;
@@ -154,6 +160,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       message: "success",
+      data: checkDate,
     });
   } catch (error) {
     return NextResponse.json({
