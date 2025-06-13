@@ -8,12 +8,15 @@ import { useQuery } from "@tanstack/react-query";
 import { LIST_CONVERSATIONS } from "@/lib/constants";
 import CreateGroupDialog from "./_components/create-group-dialog";
 import GroupConversationItem from "./_components/group-conversation-item";
+import { useSession } from "next-auth/react";
 
 export default function ConversationsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { data: session } = useSession();
+
   const { data: conversations } = useQuery({
     queryKey: [LIST_CONVERSATIONS],
     queryFn: getConversations,
@@ -23,7 +26,16 @@ export default function ConversationsLayout({
 
   return (
     <>
-      <ItemList title="พูดคุยกัน" action={<CreateGroupDialog />}>
+      <ItemList
+        title={
+          session
+            ? session.user?.name
+              ? `ฝ่าย${session.user?.name}`
+              : "สนทนา"
+            : "Loading..."
+        }
+        action={<CreateGroupDialog />}
+      >
         {conversations ? (
           conversations.length === 0 ? (
             <p className="w-full h-full flex items-center justify-center">
